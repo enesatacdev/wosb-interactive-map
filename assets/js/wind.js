@@ -133,6 +133,8 @@ function syncToNow() {
     manuallySetWind(0);
 }
 
+let isManualMode = false;
+
 document.addEventListener('DOMContentLoaded', () => {
     loadWindRef();
     
@@ -140,8 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeInput = document.getElementById('timeInput');
     
     if (dateInput && timeInput) {
-        dateInput.addEventListener('input', calculateWindDirection);
-        timeInput.addEventListener('input', calculateWindDirection);
+        dateInput.addEventListener('input', () => {
+            isManualMode = true;
+            calculateWindDirection();
+        });
+        timeInput.addEventListener('input', () => {
+            isManualMode = true;
+            calculateWindDirection();
+        });
         
         generateParticles();
         setInitialDateTime();
@@ -152,8 +160,44 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnPrev = document.getElementById('btn-wind-prev');
         const btnSync = document.getElementById('btn-wind-sync');
         
-        if(btnNext) btnNext.addEventListener('click', () => manuallySetWind(-11.25)); // CCW
-        if(btnPrev) btnPrev.addEventListener('click', () => manuallySetWind(11.25));  // CW
-        if(btnSync) btnSync.addEventListener('click', syncToNow);
+        if(btnNext) btnNext.addEventListener('click', () => {
+            isManualMode = true;
+            manuallySetWind(-11.25);
+        }); 
+        if(btnPrev) btnPrev.addEventListener('click', () => {
+            isManualMode = true;
+            manuallySetWind(11.25);
+        });  
+        if(btnSync) btnSync.addEventListener('click', () => {
+            isManualMode = false;
+            syncToNow();
+        });
+        
+        const windSlider = document.getElementById('wind-slider');
+        if (windSlider) {
+            windSlider.addEventListener('input', (e) => {
+                isManualMode = true;
+                const targetDeg = parseFloat(e.target.value);
+                document.getElementById('wind-slider-val').innerText = targetDeg + '°';
+                
+                const now = getSelectedDateTime();
+                const diffMs = now - REF_DATE;
+                const totalMinutes = Math.floor(diffMs / 60000);
+                
+                // rawRotation = (REF_ANGLE + totalMinutes * DEGREES_PER_MINUTE) % 360
+                // We want rawRotation to exactly equal targetDeg
+                REF_ANGLE = targetDeg - (totalMinutes * DEGREES_PER_MINUTE);
+                localStorage.setItem('sb-wind-ref-angle', REF_ANGLE);
+                calculateWindDirection();
+            });
+        }
+
+        // Canlı Zaman Döngüsü (Her 10 saniyede bir saati ileri alıp rüzgarı kendi kendine günceller)
+        setInterval(() => {
+            if (!isManualMode) {
+                setInitialDateTime();
+                calculateWindDirection();
+            }
+        }, 10000);
     }
 });
