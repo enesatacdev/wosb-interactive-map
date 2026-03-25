@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rüzgar Yönü Hesaplayıcı</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0f172a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: url('1.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #controls {
+            position: absolute;
+            top: 30px;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 20px 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            display: flex;
+            gap: 25px;
+            color: #f1f5f9;
+            z-index: 20;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        #controls:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
+        }
+
+        .input-group input {
+            padding: 12px 16px;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        #dateInput { width: 170px; }
+        #timeInput { width: 130px; }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        /* --- MERKEZİ GÖRÜNMEZ YUVARLAK (Rüzgar Alanı) --- */
+        #wind-indicator-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;       /* 350px görünmez alan */
+            height: 350px;
+            border-radius: 50%; /* Tam yuvarlak sınır */
+            overflow: hidden;   /* Dışarı çıkanlar görünmez */
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* --- HARAKETLİ RÜZGAR KATMANI (Dönen Kısım) --- */
+        #wind-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px; /* Transform rotate yaparken köşelerin boş kalmaması için çapı büyük */
+            height: 500px;
+            margin-top: -250px;
+            margin-left: -250px;
+            transform-origin: center center;
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .wind-particle {
+            position: absolute;
+            width: 150px; /* Biraz daha uzun */
+            height: 90px; /* Daha kalın olması için boyunu artırdık */
+            top: 50%; 
+            margin-top: -45px;
+            left: 0;
+            /* Kanatları daha geniş açılan (0,10 ve 0,90) ve çok daha belirgin, %85 opak mavi üçgen */
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M5,10 L95,50 L5,90 L25,50 Z" fill="rgba(59, 130, 246, 0.85)"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: blur(0.5px); /* Çok dağılmasını önleyip biraz daha netleştirdik */
+            opacity: 0;
+        }
+
+        @keyframes blow {
+            /* Partiküllerin ekranda kalma opaklığını %80'den %100'e (tamamen belirgin) çıkardık */
+            0% { transform: translateX(50px) scale(0.9); opacity: 0; }
+            30% { opacity: 1; transform: translateX(150px) scale(1.1); }
+            70% { opacity: 1; transform: translateX(300px) scale(1.1); }
+            100% { transform: translateX(450px) scale(0.9); opacity: 0; }
+        }
+
+        /* -------------------------------- */
+        
+        #info-panel {
+            position: absolute;
+            bottom: 30px;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 15px 30px;
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-size: 18px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 20;
+        }
+
+        .highlight {
+            color: #3ea6ff;
+            font-weight: 700;
+            font-size: 24px;
+            font-family: monospace;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map-container">
+        <div id="controls">
+            <div class="input-group">
+                <label for="dateInput">Tarih</label>
+                <input type="date" id="dateInput">
+            </div>
+            <div class="input-group">
+                <label for="timeInput">Saat</label>
+                <input type="time" id="timeInput">
+            </div>
+        </div>
+
+        <div id="wind-indicator-container">
+            <div id="wind-layer"></div>
+        </div>
+        
+        <div id="info-panel">
+            <span>Rüzgar Yönü:</span> 
+            <span class="highlight"><span id="angleValue">0</span>°</span>
+        </div>
+    </div>
+
+    <script>
+        const dateInput = document.getElementById('dateInput');
+        const timeInput = document.getElementById('timeInput');
+        const windLayer = document.getElementById('wind-layer');
+        const angleValue = document.getElementById('angleValue');
+
+        const DEGREES_PER_MINUTE = 3.25;
+        const REF_DATE = new Date("2026-03-25T22:50:00");
+        
+        // 22:50'deki fotoğrafta ok tam olarak Güneydoğu'ya bakıyor. 
+        // SVG'mizin varsayılan 0 derecesi Doğu'yu (Sağ) gösterdiği için Güneydoğu 45 derecedir.
+        const REF_ANGLE = 45; 
+
+        // Sadece 1 (veya 3 tane arka arkaya kopya) rüzgar akışı oluşturur
+        function generateParticles() {
+            windLayer.innerHTML = ''; 
+            
+            // Arka arkaya sonsuz bir döngü izlenimi yaratmak için 3 parçayı sıralıyoruz.
+            const numParticles = 3; 
+            const duration = 6; // Kaç saniyede karşıya varacakları
+            
+            for(let i=0; i<numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'wind-particle';
+                
+                // Animasyon gecikmesi (eksi verince ekranın yarısından başlamış gibi kusursuz bir flow yaparız)
+                const delay = -i * (duration / numParticles); 
+                
+                particle.style.animation = `blow ${duration}s linear ${delay}s infinite`;
+                windLayer.appendChild(particle);
+            }
+        }
+
+        function setInitialDateTime() {
+            const now = new Date();
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            timeInput.value = `${hours}:${minutes}`;
+        }
+
+        function calculateWindDirection() {
+            if (!dateInput.value || !timeInput.value) return;
+
+            const inputDateTimeText = `${dateInput.value}T${timeInput.value}:00`;
+            const currentSelectedDate = new Date(inputDateTimeText);
+
+            // Milisaniye farkını bul
+            const diffMs = currentSelectedDate - REF_DATE;
+            // Farkı dakikaya çeviriyoruz çünkü 10 dakikada 32.5 derece dönüyor!
+            const diffMinutes = diffMs / (1000 * 60);
+
+            // Dakikada 3.25 derece saat yönünün tersine (eksi)
+            let newAngle = REF_ANGLE - (diffMinutes * DEGREES_PER_MINUTE);
+
+            let displayRotation = newAngle % 360; 
+            if (displayRotation < 0) {
+                displayRotation += 360;
+            }
+            if (displayRotation === 360) displayRotation = 0;
+
+            // Fotoğraftaki yeşil ok (Rüzgar Gülü) rüzgarın GELDİĞİ yönü gösteriyor!
+            // Rüzgar akımı (mavi dalgalar) ise tam zıttı yani ETTİĞİ (gittiği) yöne doğru olmalıdır.
+            // Bu nedenle görselliği tam 180 derece ters çeviriyoruz.
+            windLayer.style.transform = `rotate(${displayRotation - 180}deg)`;
+            
+            // Yeşil okun (referansın) baktığı yönü metin olarak veriyoruz
+            angleValue.textContent = displayRotation.toFixed(2);
+        }
+
+        dateInput.addEventListener('input', calculateWindDirection);
+        timeInput.addEventListener('input', calculateWindDirection);
+
+        generateParticles();
+        setInitialDateTime();
+        calculateWindDirection();
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+{
+  "assab": {
+    "name": "Assab",
+    "type": "small",
+    "icon": "assets/img/k.png",
+    "x": 67,
+    "y": 1181,
+    "products": []
+  },
+  "cursed-city": {
+    "name": "Cursed City",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 71,
+    "y": 606,
+    "products": []
+  },
+  "al-khalif": {
+    "name": "Al-Khalif",
+    "type": "small",
+    "icon": "assets/img/k.png",
+    "x": 80,
+    "y": 1363,
+    "products": []
+  },
+  "nisogora": {
+    "name": "Nisogora",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 136,
+    "y": 404,
+    "products": []
+  },
+  "nordberg": {
+    "name": "Nordberg",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 187,
+    "y": 271,
+    "products": []
+  },
+  "west-bastion": {
+    "name": "West Bastion",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 184,
+    "y": 788,
+    "products": []
+  },
+  "sharhat": {
+    "name": "Sharhat",
+    "type": "small",
+    "icon": "assets/img/k.png",
+    "x": 260,
+    "y": 1075,
+    "products": []
+  },
+  "oneg": {
+    "name": "Oneg",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 311,
+    "y": 91,
+    "products": []
+  },
+  "naabad-stronghold": {
+    "name": "Naabad Stronghold",
+    "type": "pirate",
+    "icon": "assets/img/p.png",
+    "x": 373,
+    "y": 646,
+    "products": []
+  },
+  "gelbion": {
+    "name": "Gelbion",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 453,
+    "y": 312,
+    "products": []
+  },
+  "masadora": {
+    "name": "Masadora",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 469,
+    "y": 799,
+    "products": []
+  },
+  "devios": {
+    "name": "Devios",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 510,
+    "y": 1147,
+    "products": []
+  },
+  "el-tigre": {
+    "name": "El Tigre",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 522,
+    "y": 1334,
+    "products": []
+  },
+  "surako": {
+    "name": "Surako",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 523,
+    "y": 499,
+    "products": []
+  },
+  "corsa-nois-bay": {
+    "name": "Corsa-Nois Bay",
+    "type": "pirate",
+    "icon": "assets/img/p.png",
+    "x": 642,
+    "y": 72,
+    "products": []
+  },
+  "bridgetown": {
+    "name": "Bridgetown",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 700,
+    "y": 806,
+    "products": []
+  },
+  "san-cristobel": {
+    "name": "San Cristobel",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 721,
+    "y": 1320,
+    "products": []
+  },
+  "charleston": {
+    "name": "Charleston",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 733,
+    "y": 956,
+    "products": []
+  },
+  "nevis": {
+    "name": "Nevis",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 796,
+    "y": 509,
+    "products": []
+  },
+  "pirate-city": {
+    "name": "Pirate City",
+    "type": "pirate",
+    "icon": "assets/img/p.png",
+    "x": 813,
+    "y": 1389,
+    "products": []
+  },
+  "everston": {
+    "name": "Everston",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 837,
+    "y": 202,
+    "products": []
+  },
+  "laguna-blanco": {
+    "name": "Laguna Blanco",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 945,
+    "y": 939,
+    "products": []
+  },
+  "aruba": {
+    "name": "Aruba",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1053,
+    "y": 324,
+    "products": []
+  },
+  "san-martinas": {
+    "name": "San Martinas",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1059,
+    "y": 1345,
+    "products": []
+  },
+  "tortuga": {
+    "name": "Tortuga",
+    "type": "pirate",
+    "icon": "assets/img/p.png",
+    "x": 1099,
+    "y": 741,
+    "products": []
+  },
+  "la-navidad": {
+    "name": "La Navidad",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1214,
+    "y": 888,
+    "products": []
+  },
+  "thermopylae": {
+    "name": "Thermopylae",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1230,
+    "y": 587,
+    "products": []
+  },
+  "aldansk": {
+    "name": "Aldansk",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 1244,
+    "y": 103,
+    "products": []
+  },
+  "south-bastion": {
+    "name": "South Bastion",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1267,
+    "y": 1257,
+    "products": []
+  },
+  "gray-island": {
+    "name": "Gray Island",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1313,
+    "y": 373,
+    "products": []
+  },
+  "st.-john": {
+    "name": "St. John",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 1345,
+    "y": 986,
+    "products": []
+  },
+  "fiji": {
+    "name": "Fiji",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1424,
+    "y": 717,
+    "products": []
+  },
+  "severoangelsk": {
+    "name": "Severoangelsk",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1433,
+    "y": 110,
+    "products": []
+  },
+  "bord-radel": {
+    "name": "Bord Radel",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1498,
+    "y": 1370,
+    "products": []
+  },
+  "north-bastion": {
+    "name": "North Bastion",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1523,
+    "y": 325,
+    "products": []
+  },
+  "los-catuano": {
+    "name": "Los Catuano",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1552,
+    "y": 1132,
+    "products": []
+  },
+  "brandport": {
+    "name": "Brandport",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 1611,
+    "y": 634,
+    "products": []
+  },
+  "santa-maria": {
+    "name": "Santa Maria",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 1686,
+    "y": 991,
+    "products": []
+  },
+  "northside": {
+    "name": "Northside",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1688,
+    "y": 171,
+    "products": []
+  },
+  "puerto-salada": {
+    "name": "Puerto Salada",
+    "type": "neutral",
+    "icon": "assets/img/n.png",
+    "x": 1709,
+    "y": 1202,
+    "products": []
+  },
+  "freebooter-bay": {
+    "name": "Freebooter Bay",
+    "type": "pirate",
+    "icon": "assets/img/p.png",
+    "x": 1733,
+    "y": 805,
+    "products": []
+  },
+  "freedom-bay": {
+    "name": "Freedom Bay",
+    "type": "faction",
+    "icon": "assets/img/f.png",
+    "x": 1739,
+    "y": 478,
+    "products": []
+  }
+}

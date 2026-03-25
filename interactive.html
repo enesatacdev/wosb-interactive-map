@@ -1,0 +1,6052 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World of Sea Battle - Map Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+
+<div id="app">
+    <!-- TOGGLE BUTTON -->
+    <button id="sidebar-toggle" title="Menüyü Aç/Kapat">☰</button>
+
+    <!-- SOL PANEL: KONTROLLER -->
+    <div id="sidebar">
+        <div class="px-2 pt-2 pb-4 border-b border-slate-700/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-xl shadow-lg shadow-sky-500/20">⚓</div>
+                <div>
+                    <h1 class="text-base font-bold text-white tracking-tight leading-tight" data-i18n="sidebar.brand">World of Sea Battle</h1>
+                    <p class="text-[11px] font-medium text-slate-400" data-i18n="sidebar.subtitle">Interactive Map by Vurkaçoğlu</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-2 pt-4">
+            <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                <span data-i18n="sidebar.windControl">Rüzgar Kontrolü</span>
+            </h2>
+            <div class="space-y-3">
+                <div>
+                    <label for="dateInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.date">Tarih</label>
+                    <input type="date" id="dateInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
+                </div>
+                <div>
+                    <label for="timeInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.time">Saat</label>
+                    <input type="time" id="timeInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
+                </div>
+            </div>
+            <div class="mt-4 p-4 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/30">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="sidebar.windDirection">Rüzgar Yönü</div>
+                    <div class="flex items-center gap-1">
+                         <button id="btn-wind-prev" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" title="Saat Yönü (+11.25°)">↻</button>
+                         <button id="btn-wind-next" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" title="Saat Yönü Tersi (-11.25°)">↺</button>
+                         <button id="btn-wind-sync" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-400 transition-all shadow-lg" title="Şu ana eşitle / Sync to Now">📍</button>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span id="angleValue" class="text-3xl font-extrabold text-sky-400 tabular-nums">0</span>
+                    <span class="text-lg font-bold text-slate-500">°</span>
+                    <span id="compassText" class="ml-2 text-sm font-bold text-sky-200 bg-sky-900/50 px-2 py-1 rounded">N</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-2 mt-5">
+            <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                <span data-i18n="sidebar.mapLayers">Harita Katmanları</span>
+            </h2>
+            <div id="toolbar-container" class="space-y-1">
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.ports">Limanlar</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-ports" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.lighthouses">Fenerler</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-lighthouses" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.fastTravel">Hızlı Seyahat</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-fast-travel" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.islands">Kişisel Adalar</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-island" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.production">Üretim Alanları</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-production" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.altars">Sunaklar</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-altar" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.forts">Kaleler</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-fort" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.pvpBorder">PvP Sınırı</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-circle" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.windLayer">Rüzgar Çizgileri</span>
+                    <span class="toggle-switch"><input type="checkbox" id="show-wind" checked="checked"><span class="toggle-slider"></span></span>
+                </label>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SAĞ PANEL: HARİTA VE VİEWPORT -->
+    <div id="map-viewport">
+
+        <!-- Dil seçici (sağ üstte) -->
+        <div id="lang-selector-float">
+            <select id="lang-select">
+                <option value="tr">🇹🇷 TR</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+        </div>
+    
+        <div id="canvas-wrapper">
+            <div
+      id="canvas"
+      style="
+        background-image: url(&quot;assets/img/mapa.png&quot;);
+        width: 1863px;
+        height: 1551px;
+      "
+    >
+      <!-- VURKAÇOĞLU Watermark -->
+      <div style="position: absolute; top: -285px; left: 0; width: 1863px; text-align: center; font-size: 200px; font-weight: 1000; color: rgba(255, 255, 255, 0.08); font-family: 'Inter', sans-serif; pointer-events: none; letter-spacing: 34px; text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5); text-transform: uppercase;">
+        VURKAÇOĞLU
+      </div>
+      <div
+        id="circle"
+        style="
+          background-image: url(&quot;assets/img/circle.png&quot;);
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        "
+      ></div>
+      <div
+        id="fast-travel"
+        style="
+          background-image: url(&quot;assets/img/fast-travel.png&quot;);
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        "
+      ></div>
+
+      <div
+        id="ports"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        "
+      >
+        <img
+          src="assets/img/k.png"
+          style="position: absolute; top: 1181px; left: 67px"
+          title="Assab"
+          alt="Assab"
+        data-port-id="assab" data-port-name="Assab" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1241px;
+            left: 97px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Assab
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 606px; left: 71px"
+          title="Cursed City"
+          alt="Cursed City"
+        data-port-id="cursed-city" data-port-name="Cursed City" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 666px;
+            left: 101px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Cursed City
+        </div>
+        <img
+          src="assets/img/k.png"
+          style="position: absolute; top: 1363px; left: 80px"
+          title="Al-Khalif"
+          alt="Al-Khalif"
+        data-port-id="al-khalif" data-port-name="Al-Khalif" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1423px;
+            left: 110px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Al-Khalif
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 404px; left: 136px"
+          title="Nisogora"
+          alt="Nisogora"
+        data-port-id="nisogora" data-port-name="Nisogora" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 464px;
+            left: 166px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Nisogora
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 271px; left: 187px"
+          title="Nordberg"
+          alt="Nordberg"
+        data-port-id="nordberg" data-port-name="Nordberg" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 331px;
+            left: 217px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Nordberg
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 788px; left: 184px"
+          title="West Bastion"
+          alt="West Bastion"
+        data-port-id="west-bastion" data-port-name="West Bastion" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 848px;
+            left: 214px;
+            text-indent: -6ch;
+            z-index: 100;
+          "
+        >
+          West Bastion
+        </div>
+        <img
+          src="assets/img/k.png"
+          style="position: absolute; top: 1075px; left: 260px"
+          title="Sharhat"
+          alt="Sharhat"
+        data-port-id="sharhat" data-port-name="Sharhat" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1135px;
+            left: 290px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Sharhat
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 91px; left: 311px"
+          title="Oneg"
+          alt="Oneg"
+        data-port-id="oneg" data-port-name="Oneg" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 151px;
+            left: 341px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          Oneg
+        </div>
+        <img
+          src="assets/img/p.png"
+          style="position: absolute; top: 646px; left: 373px"
+          title="Naabad Stronghold"
+          alt="Naabad Stronghold"
+        data-port-id="naabad-stronghold" data-port-name="Naabad Stronghold" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 706px;
+            left: 403px;
+            text-indent: -8.5ch;
+            z-index: 100;
+          "
+        >
+          Naabad Stronghold
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 312px; left: 453px"
+          title="Gelbion"
+          alt="Gelbion"
+        data-port-id="gelbion" data-port-name="Gelbion" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 372px;
+            left: 483px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Gelbion
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 799px; left: 469px"
+          title="Masadora"
+          alt="Masadora"
+        data-port-id="masadora" data-port-name="Masadora" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 859px;
+            left: 499px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Masadora
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1147px; left: 510px"
+          title="Devios"
+          alt="Devios"
+        data-port-id="devios" data-port-name="Devios" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1207px;
+            left: 540px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          Devios
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 1334px; left: 522px"
+          title="El Tigre"
+          alt="El Tigre"
+        data-port-id="el-tigre" data-port-name="El Tigre" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1394px;
+            left: 552px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          El Tigre
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 499px; left: 523px"
+          title="Surako"
+          alt="Surako"
+        data-port-id="surako" data-port-name="Surako" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 559px;
+            left: 553px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          Surako
+        </div>
+        <img
+          src="assets/img/p.png"
+          style="position: absolute; top: 72px; left: 642px"
+          title="Corsa-Nois Bay"
+          alt="Corsa-Nois Bay"
+        data-port-id="corsa-nois-bay" data-port-name="Corsa-Nois Bay" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 132px;
+            left: 672px;
+            text-indent: -7ch;
+            z-index: 100;
+          "
+        >
+          Corsa-Nois Bay
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 806px; left: 700px"
+          title="Bridgetown"
+          alt="Bridgetown"
+        data-port-id="bridgetown" data-port-name="Bridgetown" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 866px;
+            left: 730px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Bridgetown
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1320px; left: 721px"
+          title="San Cristobel"
+          alt="San Cristobel"
+        data-port-id="san-cristobel" data-port-name="San Cristobel" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1380px;
+            left: 751px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          San Cristobel
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 956px; left: 733px"
+          title="Charleston"
+          alt="Charleston"
+        data-port-id="charleston" data-port-name="Charleston" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1016px;
+            left: 763px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Charleston
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 509px; left: 796px"
+          title="Nevis"
+          alt="Nevis"
+        data-port-id="nevis" data-port-name="Nevis" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 569px;
+            left: 826px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Nevis
+        </div>
+        <img
+          src="assets/img/p.png"
+          style="position: absolute; top: 1389px; left: 813px"
+          title="Pirate City"
+          alt="Pirate City"
+        data-port-id="pirate-city" data-port-name="Pirate City" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1449px;
+            left: 843px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Pirate City
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 202px; left: 837px"
+          title="Everston"
+          alt="Everston"
+        data-port-id="everston" data-port-name="Everston" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 262px;
+            left: 867px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Everston
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 939px; left: 945px"
+          title="Laguna Blanco"
+          alt="Laguna Blanco"
+        data-port-id="laguna-blanco" data-port-name="Laguna Blanco" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 999px;
+            left: 975px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Laguna Blanco
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 324px; left: 1053px"
+          title="Aruba"
+          alt="Aruba"
+        data-port-id="aruba" data-port-name="Aruba" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 384px;
+            left: 1083px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Aruba
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1345px; left: 1059px"
+          title="San Martinas"
+          alt="San Martinas"
+        data-port-id="san-martinas" data-port-name="San Martinas" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1405px;
+            left: 1089px;
+            text-indent: -6ch;
+            z-index: 100;
+          "
+        >
+          San Martinas
+        </div>
+        <img
+          src="assets/img/p.png"
+          style="position: absolute; top: 741px; left: 1099px"
+          title="Tortuga"
+          alt="Tortuga"
+        data-port-id="tortuga" data-port-name="Tortuga" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 801px;
+            left: 1129px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Tortuga
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 888px; left: 1214px"
+          title="La Navidad"
+          alt="La Navidad"
+        data-port-id="la-navidad" data-port-name="La Navidad" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 948px;
+            left: 1244px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          La Navidad
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 587px; left: 1230px"
+          title="Thermopylae"
+          alt="Thermopylae"
+        data-port-id="thermopylae" data-port-name="Thermopylae" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 647px;
+            left: 1260px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Thermopylae
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 103px; left: 1244px"
+          title="Aldansk"
+          alt="Aldansk"
+        data-port-id="aldansk" data-port-name="Aldansk" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 163px;
+            left: 1274px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Aldansk
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1257px; left: 1267px"
+          title="South Bastion"
+          alt="South Bastion"
+        data-port-id="south-bastion" data-port-name="South Bastion" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1317px;
+            left: 1297px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          South Bastion
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 373px; left: 1313px"
+          title="Gray Island"
+          alt="Gray Island"
+        data-port-id="gray-island" data-port-name="Gray Island" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 433px;
+            left: 1343px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Gray Island
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 986px; left: 1345px"
+          title="St. John"
+          alt="St. John"
+        data-port-id="st.-john" data-port-name="St. John" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1046px;
+            left: 1375px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          St. John
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 717px; left: 1424px"
+          title="Fiji"
+          alt="Fiji"
+        data-port-id="fiji" data-port-name="Fiji" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 777px;
+            left: 1454px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          Fiji
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 110px; left: 1433px"
+          title="Severoangelsk"
+          alt="Severoangelsk"
+        data-port-id="severoangelsk" data-port-name="Severoangelsk" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 170px;
+            left: 1463px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Severoangelsk
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1370px; left: 1498px"
+          title="Bord Radel"
+          alt="Bord Radel"
+        data-port-id="bord-radel" data-port-name="Bord Radel" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1430px;
+            left: 1528px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Bord Radel
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 325px; left: 1523px"
+          title="North Bastion"
+          alt="North Bastion"
+        data-port-id="north-bastion" data-port-name="North Bastion" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 385px;
+            left: 1553px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          North Bastion
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1132px; left: 1552px"
+          title="Los Catuano"
+          alt="Los Catuano"
+        data-port-id="los-catuano" data-port-name="Los Catuano" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1192px;
+            left: 1582px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Los Catuano
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 634px; left: 1611px"
+          title="Brandport"
+          alt="Brandport"
+        data-port-id="brandport" data-port-name="Brandport" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 694px;
+            left: 1641px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Brandport
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 991px; left: 1686px"
+          title="Santa Maria"
+          alt="Santa Maria"
+        data-port-id="santa-maria" data-port-name="Santa Maria" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1051px;
+            left: 1716px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Santa Maria
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 171px; left: 1688px"
+          title="Northside"
+          alt="Northside"
+        data-port-id="northside" data-port-name="Northside" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 231px;
+            left: 1718px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Northside
+        </div>
+        <img
+          src="assets/img/n.png"
+          style="position: absolute; top: 1202px; left: 1709px"
+          title="Puerto Salada"
+          alt="Puerto Salada"
+        data-port-id="puerto-salada" data-port-name="Puerto Salada" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 1262px;
+            left: 1739px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Puerto Salada
+        </div>
+        <img
+          src="assets/img/p.png"
+          style="position: absolute; top: 805px; left: 1733px"
+          title="Freebooter Bay"
+          alt="Freebooter Bay"
+        data-port-id="freebooter-bay" data-port-name="Freebooter Bay" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 865px;
+            left: 1763px;
+            text-indent: -7ch;
+            z-index: 100;
+          "
+        >
+          Freebooter Bay
+        </div>
+        <img
+          src="assets/img/f.png"
+          style="position: absolute; top: 478px; left: 1739px"
+          title="Freedom Bay"
+          alt="Freedom Bay"
+        data-port-id="freedom-bay" data-port-name="Freedom Bay" />
+        <div
+          class="label"
+          style="
+            position: absolute;
+            top: 538px;
+            left: 1769px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Freedom Bay
+        </div>
+      </div>
+      <div
+        id="portsxy"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          display: none;
+        "
+      >
+        <div
+          class="portxy"
+          style="position: absolute; top: 1210px; left: 96px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1221px;
+            left: 97px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Assab<br />(97,1211)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 635px; left: 100px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 646px;
+            left: 101px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Cursed City<br />(101,636)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1392px; left: 109px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1403px;
+            left: 110px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Al-Khalif<br />(110,1393)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 433px; left: 165px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 444px;
+            left: 166px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Nisogora<br />(166,434)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 300px; left: 216px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 311px;
+            left: 217px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Nordberg<br />(217,301)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 817px; left: 213px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 828px;
+            left: 214px;
+            text-indent: -6ch;
+            z-index: 100;
+          "
+        >
+          West Bastion<br />(214,818)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1104px; left: 289px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1115px;
+            left: 290px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Sharhat<br />(290,1105)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 120px; left: 340px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 131px;
+            left: 341px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          Oneg<br />(341,121)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 675px; left: 402px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 686px;
+            left: 403px;
+            text-indent: -8.5ch;
+            z-index: 100;
+          "
+        >
+          Naabad Stronghold<br />(403,676)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 341px; left: 482px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 352px;
+            left: 483px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Gelbion<br />(483,342)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 828px; left: 498px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 839px;
+            left: 499px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Masadora<br />(499,829)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1176px; left: 539px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1187px;
+            left: 540px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          Devios<br />(540,1177)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1363px; left: 551px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1374px;
+            left: 552px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          El Tigre<br />(552,1364)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 528px; left: 552px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 539px;
+            left: 553px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          Surako<br />(553,529)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 101px; left: 671px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 112px;
+            left: 672px;
+            text-indent: -7ch;
+            z-index: 100;
+          "
+        >
+          Corsa-Nois Bay<br />(672,102)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 835px; left: 729px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 846px;
+            left: 730px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Bridgetown<br />(730,836)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1349px; left: 750px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1360px;
+            left: 751px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          San Cristobel<br />(751,1350)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 985px; left: 762px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 996px;
+            left: 763px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Charleston<br />(763,986)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 538px; left: 825px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 549px;
+            left: 826px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Nevis<br />(826,539)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1418px; left: 842px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1429px;
+            left: 843px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Pirate City<br />(843,1419)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 231px; left: 866px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 242px;
+            left: 867px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          Everston<br />(867,232)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 968px; left: 974px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 979px;
+            left: 975px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Laguna Blanco<br />(975,969)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 353px; left: 1082px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 364px;
+            left: 1083px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          Aruba<br />(1083,354)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1374px; left: 1088px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1385px;
+            left: 1089px;
+            text-indent: -6ch;
+            z-index: 100;
+          "
+        >
+          San Martinas<br />(1089,1375)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 770px; left: 1128px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 781px;
+            left: 1129px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Tortuga<br />(1129,771)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 917px; left: 1243px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 928px;
+            left: 1244px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          La Navidad<br />(1244,918)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 616px; left: 1259px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 627px;
+            left: 1260px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Thermopylae<br />(1260,617)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 132px; left: 1273px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 143px;
+            left: 1274px;
+            text-indent: -3.5ch;
+            z-index: 100;
+          "
+        >
+          Aldansk<br />(1274,133)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1286px; left: 1296px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1297px;
+            left: 1297px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          South Bastion<br />(1297,1287)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 402px; left: 1342px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 413px;
+            left: 1343px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Gray Island<br />(1343,403)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1015px; left: 1374px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1026px;
+            left: 1375px;
+            text-indent: -4ch;
+            z-index: 100;
+          "
+        >
+          St. John<br />(1375,1016)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 746px; left: 1453px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 757px;
+            left: 1454px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          Fiji<br />(1454,747)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 139px; left: 1462px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 150px;
+            left: 1463px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Severoangelsk<br />(1463,140)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1399px; left: 1527px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1410px;
+            left: 1528px;
+            text-indent: -5ch;
+            z-index: 100;
+          "
+        >
+          Bord Radel<br />(1528,1400)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 354px; left: 1552px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 365px;
+            left: 1553px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          North Bastion<br />(1553,355)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1161px; left: 1581px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1172px;
+            left: 1582px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Los Catuano<br />(1582,1162)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 663px; left: 1640px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 674px;
+            left: 1641px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Brandport<br />(1641,664)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1020px; left: 1715px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1031px;
+            left: 1716px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Santa Maria<br />(1716,1021)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 200px; left: 1717px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 211px;
+            left: 1718px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          Northside<br />(1718,201)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 1231px; left: 1738px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 1242px;
+            left: 1739px;
+            text-indent: -6.5ch;
+            z-index: 100;
+          "
+        >
+          Puerto Salada<br />(1739,1232)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 834px; left: 1762px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 845px;
+            left: 1763px;
+            text-indent: -7ch;
+            z-index: 100;
+          "
+        >
+          Freebooter Bay<br />(1763,835)
+        </div>
+        <div
+          class="portxy"
+          style="position: absolute; top: 507px; left: 1768px"
+        ></div>
+        <div
+          class="portxylabel"
+          style="
+            position: absolute;
+            top: 518px;
+            left: 1769px;
+            text-indent: -5.5ch;
+            z-index: 100;
+          "
+        >
+          Freedom Bay<br />(1769,508)
+        </div>
+      </div>
+      <div
+        id="lighthouses"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        "
+      >
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 102px; left: 1221px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 116px; left: 1309px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 121px; left: 1391px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 125px; left: 389px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 156px; left: 1491px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 161px; left: 1264px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 163px; left: 258px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 167px; left: 778px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 168px; left: 315px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 169px; left: 1657px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 179px; left: 1441px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 203px; left: 909px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 234px; left: 1751px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 236px; left: 178px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 251px; left: 1685px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 261px; left: 873px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 273px; left: 487px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 305px; left: 1089px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 316px; left: 1019px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 317px; left: 172px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 320px; left: 234px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 327px; left: 1495px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 332px; left: 1582px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 334px; left: 521px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 372px; left: 1401px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 379px; left: 472px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 383px; left: 1575px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 385px; left: 1045px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 386px; left: 1254px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 387px; left: 193px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 433px; left: 1302px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 449px; left: 1760px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 456px; left: 110px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 459px; left: 186px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 463px; left: 546px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 472px; left: 811px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 491px; left: 1719px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 503px; left: 586px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 530px; left: 1753px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 551px; left: 1264px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 552px; left: 858px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 554px; left: 531px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 576px; left: 814px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 578px; left: 121px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 582px; left: 45px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 596px; left: 1189px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 609px; left: 1611px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 647px; left: 1215px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 673px; left: 1596px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 674px; left: 89px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 675px; left: 1640px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 699px; left: 1405px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 703px; left: 1503px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 753px; left: 172px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 770px; left: 449px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 788px; left: 1428px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 789px; left: 531px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 792px; left: 762px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 806px; left: 252px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 827px; left: 661px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 850px; left: 1227px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 853px; left: 181px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 860px; left: 511px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 867px; left: 1291px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 873px; left: 728px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 885px; left: 1156px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 912px; left: 934px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 928px; left: 710px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 959px; left: 1358px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 969px; left: 1012px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 977px; left: 911px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 981px; left: 1669px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 986px; left: 1738px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 994px; left: 795px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1003px; left: 1309px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1015px; left: 714px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1044px; left: 270px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1045px; left: 1372px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1050px; left: 1712px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1065px; left: 301px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1089px; left: 1588px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1106px; left: 514px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1107px; left: 239px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1122px; left: 1512px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1156px; left: 86px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1179px; left: 472px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1193px; left: 567px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1202px; left: 1569px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1214px; left: 1761px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1216px; left: 1682px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1217px; left: 125px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1223px; left: 1275px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1239px; left: 59px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1251px; left: 1709px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1271px; left: 1324px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1272px; left: 700px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1279px; left: 790px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1294px; left: 514px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1304px; left: 1261px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1309px; left: 1051px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1323px; left: 103px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1329px; left: 584px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1334px; left: 1113px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1335px; left: 793px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1345px; left: 48px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1348px; left: 1491px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1362px; left: 1564px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1386px; left: 494px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1398px; left: 1034px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1410px; left: 141px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+        <img
+          src="assets/img/lh.png"
+          style="position: absolute; top: 1419px; left: 1539px"
+          title="Lighthouse"
+          alt="Lighthouse"
+        />
+      </div>
+      <div
+        id="poi"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        "
+      >
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 927px; left: 51px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1283px; left: 74px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 265px; left: 92px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 648px; left: 154px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1035px; left: 189px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 173px; left: 212px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1265px; left: 234px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1169px; left: 270px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 578px; left: 277px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1428px; left: 308px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 342px; left: 312px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 405px; left: 338px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 976px; left: 338px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 777px; left: 352px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1307px; left: 416px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 470px; left: 421px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 127px; left: 425px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1439px; left: 431px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 887px; left: 456px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 416px; left: 469px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 721px; left: 519px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1265px; left: 551px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1087px; left: 560px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 438px; left: 564px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 404px; left: 588px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 153px; left: 622px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 645px; left: 668px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1016px; left: 668px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 716px; left: 698px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 215px; left: 720px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 400px; left: 722px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1149px; left: 798px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 985px; left: 846px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 102px; left: 853px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 867px; left: 871px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1332px; left: 882px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 471px; left: 931px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1289px; left: 1015px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 883px; left: 1070px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 683px; left: 1085px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 810px; left: 1092px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 431px; left: 1110px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1092px; left: 1116px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 983px; left: 1125px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 297px; left: 1148px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1228px; left: 1155px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1435px; left: 1202px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 766px; left: 1224px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1202px; left: 1240px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 101px; left: 1288px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 466px; left: 1304px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 761px; left: 1331px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1400px; left: 1338px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 325px; left: 1350px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1269px; left: 1393px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1043px; left: 1417px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 916px; left: 1419px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 519px; left: 1427px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1136px; left: 1469px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 198px; left: 1472px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 456px; left: 1494px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 777px; left: 1563px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1432px; left: 1596px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 311px; left: 1616px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 577px; left: 1682px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 1362px; left: 1719px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1446px; left: 225px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 727px; left: 326px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1235px; left: 717px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 635px; left: 979px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 745px; left: 1005px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 938px; left: 1118px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1196px; left: 1258px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/coal.png"
+          class="poi-icon production"
+          style="position: absolute; top: 812px; left: 1637px"
+          title="Coal Mine"
+          alt="Coal Mine"
+        />
+        <img
+          src="assets/img/copper.png"
+          class="poi-icon production"
+          style="position: absolute; top: 623px; left: 804px"
+          title="Copper Mine"
+          alt="Copper Mine"
+        />
+        <img
+          src="assets/img/copper.png"
+          class="poi-icon production"
+          style="position: absolute; top: 283px; left: 958px"
+          title="Copper Mine"
+          alt="Copper Mine"
+        />
+        <img
+          src="assets/img/copper.png"
+          class="poi-icon production"
+          style="position: absolute; top: 842px; left: 993px"
+          title="Copper Mine"
+          alt="Copper Mine"
+        />
+        <img
+          src="assets/img/copper.png"
+          class="poi-icon production"
+          style="position: absolute; top: 466px; left: 1207px"
+          title="Copper Mine"
+          alt="Copper Mine"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1264px; left: 274px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 889px; left: 416px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 506px; left: 460px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1076px; left: 1054px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 974px; left: 1341px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/farm.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1041px; left: 1752px"
+          title="Farm"
+          alt="Farm"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 244px; left: 243px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1145px; left: 327px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 631px; left: 567px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 334px; left: 867px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 113px; left: 947px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 598px; left: 1114px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 684px; left: 1230px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 235px; left: 1618px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1418px; left: 1642px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/iron.png"
+          class="poi-icon production"
+          style="position: absolute; top: 503px; left: 1705px"
+          title="Iron Mine"
+          alt="Iron Mine"
+        />
+        <img
+          src="assets/img/resin.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1029px; left: 258px"
+          title="Resin Production"
+          alt="Resin Production"
+        />
+        <img
+          src="assets/img/resin.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1015px; left: 567px"
+          title="Resin Production"
+          alt="Resin Production"
+        />
+        <img
+          src="assets/img/resin.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1359px; left: 1209px"
+          title="Resin Production"
+          alt="Resin Production"
+        />
+        <img
+          src="assets/img/resin.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1194px; left: 1745px"
+          title="Resin Production"
+          alt="Resin Production"
+        />
+        <img
+          src="assets/img/rum.png"
+          class="poi-icon production"
+          style="position: absolute; top: 496px; left: 63px"
+          title="Rum Production"
+          alt="Rum Production"
+        />
+        <img
+          src="assets/img/rum.png"
+          class="poi-icon production"
+          style="position: absolute; top: 710px; left: 445px"
+          title="Rum Production"
+          alt="Rum Production"
+        />
+        <img
+          src="assets/img/rum.png"
+          class="poi-icon production"
+          style="position: absolute; top: 346px; left: 662px"
+          title="Rum Production"
+          alt="Rum Production"
+        />
+        <img
+          src="assets/img/rum.png"
+          class="poi-icon production"
+          style="position: absolute; top: 454px; left: 1436px"
+          title="Rum Production"
+          alt="Rum Production"
+        />
+        <img
+          src="assets/img/rum.png"
+          class="poi-icon production"
+          style="position: absolute; top: 700px; left: 1516px"
+          title="Rum Production"
+          alt="Rum Production"
+        />
+        <img
+          src="assets/img/water.png"
+          class="poi-icon production"
+          style="position: absolute; top: 178px; left: 171px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/water.png"
+          class="poi-icon production"
+          style="position: absolute; top: 83px; left: 494px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/water.png"
+          class="poi-icon production"
+          style="position: absolute; top: 94px; left: 1339px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/water.png"
+          class="poi-icon production"
+          style="position: absolute; top: 117px; left: 1580px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/water.png"
+          class="poi-icon production"
+          style="position: absolute; top: 139px; left: 1754px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 926px; left: 94px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 406px; left: 297px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1437px; left: 570px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 708px; left: 617px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1170px; left: 629px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 514px; left: 718px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1359px; left: 925px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 853px; left: 1275px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 554px; left: 1347px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1423px; left: 1427px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 873px; left: 1464px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/wood.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1341px; left: 1707px"
+          title="Wood Harvest Site"
+          alt="Wood Harvest Site"
+        />
+        <img
+          src="assets/img/water-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 163px; left: 16px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/water-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 19px; left: 1056px"
+          title="Ice Mining (water)"
+          alt="Ice Mining (water)"
+        />
+        <img
+          src="assets/img/altar.png"
+          class="altar"
+          style="position: absolute; top: 693px; left: 406px"
+          title="Altar"
+          alt="Altar"
+        />
+        <img
+          src="assets/img/altar.png"
+          class="altar"
+          style="position: absolute; top: 1428px; left: 735px"
+          title="Altar"
+          alt="Altar"
+        />
+        <img
+          src="assets/img/altar.png"
+          class="altar"
+          style="position: absolute; top: 866px; left: 827px"
+          title="Altar"
+          alt="Altar"
+        />
+        <img
+          src="assets/img/altar.png"
+          class="altar"
+          style="position: absolute; top: 529px; left: 1170px"
+          title="Altar"
+          alt="Altar"
+        />
+        <img
+          src="assets/img/altar-r.png"
+          class="altar"
+          style="position: absolute; top: 907px; left: 1818px"
+          title="Altar"
+          alt="Altar"
+        />
+        <img
+          src="assets/img/fort-r.png"
+          class="fort"
+          style="position: absolute; top: 527px; left: 16px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1086px; left: 70px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 240px; left: 113px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 688px; left: 213px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1218px; left: 261px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 481px; left: 331px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 302px; left: 359px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1444px; left: 388px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 985px; left: 403px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 779px; left: 599px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort-r.png"
+          class="fort"
+          style="position: absolute; top: 19px; left: 748px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 255px; left: 751px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort-r.png"
+          class="fort"
+          style="position: absolute; top: 1499px; left: 768px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1062px; left: 779px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1040px; left: 953px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 707px; left: 997px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1228px; left: 1037px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 549px; left: 1128px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 232px; left: 1159px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1124px; left: 1226px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1425px; left: 1266px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 685px; left: 1281px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 544px; left: 1504px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 1247px; left: 1607px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 880px; left: 1649px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort.png"
+          class="fort"
+          style="position: absolute; top: 294px; left: 1696px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort-r.png"
+          class="fort"
+          style="position: absolute; top: 1078px; left: 1795px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/fort-r.png"
+          class="fort"
+          style="position: absolute; top: 1484px; left: 1818px"
+          title="Imperial fort"
+          alt="Imperial fort"
+        />
+        <img
+          src="assets/img/printshop-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 423px; left: 16px"
+          title="Underground Print Shop"
+          alt="Underground Print Shop"
+        />
+        <img
+          src="assets/img/printshop-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1499px; left: 909px"
+          title="Underground Print Shop"
+          alt="Underground Print Shop"
+        />
+        <img
+          src="assets/img/printshop-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 1499px; left: 1784px"
+          title="Underground Print Shop"
+          alt="Underground Print Shop"
+        />
+        <img
+          src="assets/img/printshop-r.png"
+          class="poi-icon production"
+          style="position: absolute; top: 329px; left: 1817px"
+          title="Underground Print Shop"
+          alt="Underground Print Shop"
+        />
+        <img
+          src="assets/img/island.png"
+          class="island"
+          style="position: absolute; top: 613px; left: 479px"
+          title="Personal Island Spot"
+          alt="Personal Island Spot"
+        />
+      </div>
+      <div
+        id="islandsxy"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          display: none;
+        "
+      >
+        <div
+          class="islandxy"
+          style="position: absolute; top: 942px; left: 66px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 953px;
+            left: 67px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #1<br />(67,943)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1298px; left: 89px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1309px;
+            left: 90px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #2<br />(90,1299)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 280px; left: 107px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 291px;
+            left: 108px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #3<br />(108,281)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 663px; left: 169px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 674px;
+            left: 170px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #4<br />(170,664)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1050px; left: 204px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1061px;
+            left: 205px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #5<br />(205,1051)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 188px; left: 227px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 199px;
+            left: 228px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #6<br />(228,189)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1280px; left: 249px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1291px;
+            left: 250px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #7<br />(250,1281)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1184px; left: 285px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1195px;
+            left: 286px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #8<br />(286,1185)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 593px; left: 292px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 604px;
+            left: 293px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #9<br />(293,594)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1443px; left: 323px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1454px;
+            left: 324px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #10<br />(324,1444)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 357px; left: 327px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 368px;
+            left: 328px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #11<br />(328,358)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 420px; left: 353px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 431px;
+            left: 354px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #12<br />(354,421)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 991px; left: 353px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1002px;
+            left: 354px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #13<br />(354,992)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 792px; left: 367px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 803px;
+            left: 368px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #14<br />(368,793)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1322px; left: 431px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1333px;
+            left: 432px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #15<br />(432,1323)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 485px; left: 436px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 496px;
+            left: 437px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #16<br />(437,486)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 142px; left: 440px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 153px;
+            left: 441px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #17<br />(441,143)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1454px; left: 446px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1465px;
+            left: 447px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #18<br />(447,1455)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 902px; left: 471px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 913px;
+            left: 472px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #19<br />(472,903)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 431px; left: 484px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 442px;
+            left: 485px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #20<br />(485,432)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 736px; left: 534px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 747px;
+            left: 535px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #21<br />(535,737)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1280px; left: 566px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1291px;
+            left: 567px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #22<br />(567,1281)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1102px; left: 575px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1113px;
+            left: 576px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #23<br />(576,1103)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 453px; left: 579px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 464px;
+            left: 580px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #24<br />(580,454)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 419px; left: 603px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 430px;
+            left: 604px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #25<br />(604,420)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 168px; left: 637px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 179px;
+            left: 638px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #26<br />(638,169)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 660px; left: 683px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 671px;
+            left: 684px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #27<br />(684,661)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1031px; left: 683px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1042px;
+            left: 684px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #28<br />(684,1032)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 731px; left: 713px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 742px;
+            left: 714px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #29<br />(714,732)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 230px; left: 735px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 241px;
+            left: 736px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #30<br />(736,231)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 415px; left: 737px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 426px;
+            left: 738px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #31<br />(738,416)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1164px; left: 813px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1175px;
+            left: 814px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #32<br />(814,1165)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1000px; left: 861px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1011px;
+            left: 862px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #33<br />(862,1001)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 117px; left: 868px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 128px;
+            left: 869px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #34<br />(869,118)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 882px; left: 886px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 893px;
+            left: 887px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #35<br />(887,883)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1347px; left: 897px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1358px;
+            left: 898px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #36<br />(898,1348)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 486px; left: 946px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 497px;
+            left: 947px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #37<br />(947,487)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1304px; left: 1030px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1315px;
+            left: 1031px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #38<br />(1031,1305)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 898px; left: 1085px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 909px;
+            left: 1086px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #39<br />(1086,899)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 698px; left: 1100px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 709px;
+            left: 1101px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #40<br />(1101,699)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 825px; left: 1107px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 836px;
+            left: 1108px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #41<br />(1108,826)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 446px; left: 1125px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 457px;
+            left: 1126px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #42<br />(1126,447)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1107px; left: 1131px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1118px;
+            left: 1132px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #43<br />(1132,1108)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 998px; left: 1140px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1009px;
+            left: 1141px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #44<br />(1141,999)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 312px; left: 1163px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 323px;
+            left: 1164px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #45<br />(1164,313)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1243px; left: 1170px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1254px;
+            left: 1171px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #46<br />(1171,1244)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1450px; left: 1217px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1461px;
+            left: 1218px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #47<br />(1218,1451)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 781px; left: 1239px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 792px;
+            left: 1240px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #48<br />(1240,782)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1217px; left: 1255px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1228px;
+            left: 1256px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #49<br />(1256,1218)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 116px; left: 1303px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 127px;
+            left: 1304px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #50<br />(1304,117)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 481px; left: 1319px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 492px;
+            left: 1320px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #51<br />(1320,482)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 776px; left: 1346px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 787px;
+            left: 1347px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #52<br />(1347,777)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1415px; left: 1353px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1426px;
+            left: 1354px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #53<br />(1354,1416)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 340px; left: 1365px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 351px;
+            left: 1366px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #54<br />(1366,341)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1284px; left: 1408px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1295px;
+            left: 1409px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #55<br />(1409,1285)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1058px; left: 1432px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1069px;
+            left: 1433px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #56<br />(1433,1059)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 931px; left: 1434px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 942px;
+            left: 1435px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #57<br />(1435,932)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 534px; left: 1442px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 545px;
+            left: 1443px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #58<br />(1443,535)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1151px; left: 1484px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1162px;
+            left: 1485px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #59<br />(1485,1152)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 213px; left: 1487px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 224px;
+            left: 1488px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #60<br />(1488,214)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 471px; left: 1509px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 482px;
+            left: 1510px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #61<br />(1510,472)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 792px; left: 1578px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 803px;
+            left: 1579px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #62<br />(1579,793)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1447px; left: 1611px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1458px;
+            left: 1612px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #63<br />(1612,1448)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 326px; left: 1631px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 337px;
+            left: 1632px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #64<br />(1632,327)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 592px; left: 1697px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 603px;
+            left: 1698px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #65<br />(1698,593)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 1377px; left: 1734px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 1388px;
+            left: 1735px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #66<br />(1735,1378)
+        </div>
+        <div
+          class="islandxy"
+          style="position: absolute; top: 628px; left: 494px"
+        ></div>
+        <div
+          class="islandxylabel"
+          style="
+            position: absolute;
+            top: 639px;
+            left: 495px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          island #162<br />(495,629)
+        </div>
+      </div>
+      <div
+        id="productionsxy"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          display: none;
+        "
+      >
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1461px; left: 240px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1472px;
+            left: 241px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #67<br />(241,1462)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 742px; left: 341px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 753px;
+            left: 342px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #68<br />(342,743)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1250px; left: 732px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1261px;
+            left: 733px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #69<br />(733,1251)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 650px; left: 994px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 661px;
+            left: 995px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #70<br />(995,651)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 760px; left: 1020px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 771px;
+            left: 1021px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #71<br />(1021,761)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 953px; left: 1133px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 964px;
+            left: 1134px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #72<br />(1134,954)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1211px; left: 1273px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1222px;
+            left: 1274px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #73<br />(1274,1212)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 827px; left: 1652px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 838px;
+            left: 1653px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          coal #74<br />(1653,828)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 638px; left: 819px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 649px;
+            left: 820px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          copper #75<br />(820,639)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 298px; left: 973px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 309px;
+            left: 974px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          copper #76<br />(974,299)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 857px; left: 1008px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 868px;
+            left: 1009px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          copper #77<br />(1009,858)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 481px; left: 1222px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 492px;
+            left: 1223px;
+            text-indent: -3ch;
+            z-index: 100;
+          "
+        >
+          copper #78<br />(1223,482)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1279px; left: 289px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1290px;
+            left: 290px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #79<br />(290,1280)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 904px; left: 431px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 915px;
+            left: 432px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #80<br />(432,905)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 521px; left: 475px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 532px;
+            left: 476px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #81<br />(476,522)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1091px; left: 1069px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1102px;
+            left: 1070px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #82<br />(1070,1092)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 989px; left: 1356px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1000px;
+            left: 1357px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #83<br />(1357,990)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1056px; left: 1767px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1067px;
+            left: 1768px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          farm #86<br />(1768,1057)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 259px; left: 258px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 270px;
+            left: 259px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #87<br />(259,260)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1160px; left: 342px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1171px;
+            left: 343px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #88<br />(343,1161)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 646px; left: 582px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 657px;
+            left: 583px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #89<br />(583,647)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 349px; left: 882px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 360px;
+            left: 883px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #90<br />(883,350)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 128px; left: 962px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 139px;
+            left: 963px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #91<br />(963,129)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 613px; left: 1129px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 624px;
+            left: 1130px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #92<br />(1130,614)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 699px; left: 1245px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 710px;
+            left: 1246px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #93<br />(1246,700)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 250px; left: 1633px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 261px;
+            left: 1634px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #94<br />(1634,251)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1433px; left: 1657px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1444px;
+            left: 1658px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #95<br />(1658,1434)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 518px; left: 1720px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 529px;
+            left: 1721px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          iron #96<br />(1721,519)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1044px; left: 273px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1055px;
+            left: 274px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          resin #97<br />(274,1045)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1030px; left: 582px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1041px;
+            left: 583px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          resin #98<br />(583,1031)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1374px; left: 1224px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1385px;
+            left: 1225px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          resin #99<br />(1225,1375)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1209px; left: 1760px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1220px;
+            left: 1761px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          resin #100<br />(1761,1210)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 511px; left: 78px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 522px;
+            left: 79px;
+            text-indent: -1.5ch;
+            z-index: 100;
+          "
+        >
+          rum #101<br />(79,512)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 725px; left: 460px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 736px;
+            left: 461px;
+            text-indent: -1.5ch;
+            z-index: 100;
+          "
+        >
+          rum #102<br />(461,726)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 361px; left: 677px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 372px;
+            left: 678px;
+            text-indent: -1.5ch;
+            z-index: 100;
+          "
+        >
+          rum #103<br />(678,362)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 469px; left: 1451px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 480px;
+            left: 1452px;
+            text-indent: -1.5ch;
+            z-index: 100;
+          "
+        >
+          rum #104<br />(1452,470)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 715px; left: 1531px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 726px;
+            left: 1532px;
+            text-indent: -1.5ch;
+            z-index: 100;
+          "
+        >
+          rum #105<br />(1532,716)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 193px; left: 186px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 204px;
+            left: 187px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #106<br />(187,194)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 98px; left: 509px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 109px;
+            left: 510px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #107<br />(510,99)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 109px; left: 1354px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 120px;
+            left: 1355px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #108<br />(1355,110)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 132px; left: 1595px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 143px;
+            left: 1596px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #109<br />(1596,133)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 154px; left: 1769px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 165px;
+            left: 1770px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #110<br />(1770,155)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 941px; left: 109px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 952px;
+            left: 110px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #111<br />(110,942)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 421px; left: 312px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 432px;
+            left: 313px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #112<br />(313,422)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1452px; left: 585px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1463px;
+            left: 586px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #113<br />(586,1453)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 723px; left: 632px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 734px;
+            left: 633px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #114<br />(633,724)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1185px; left: 644px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1196px;
+            left: 645px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #115<br />(645,1186)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 529px; left: 733px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 540px;
+            left: 734px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #116<br />(734,530)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1374px; left: 940px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1385px;
+            left: 941px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #117<br />(941,1375)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 868px; left: 1290px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 879px;
+            left: 1291px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #118<br />(1291,869)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 569px; left: 1362px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 580px;
+            left: 1363px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #119<br />(1363,570)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1438px; left: 1442px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1449px;
+            left: 1443px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #120<br />(1443,1439)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 888px; left: 1479px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 899px;
+            left: 1480px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #121<br />(1480,889)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1356px; left: 1722px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1367px;
+            left: 1723px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          wood #122<br />(1723,1357)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 178px; left: 31px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 189px;
+            left: 32px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #123<br />(32,179)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 34px; left: 1071px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 45px;
+            left: 1072px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          water #124<br />(1072,35)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 438px; left: 31px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 449px;
+            left: 32px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          printshop #158<br />(32,439)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1514px; left: 924px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1525px;
+            left: 925px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          printshop #159<br />(925,1515)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 1514px; left: 1799px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 1525px;
+            left: 1800px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          printshop #160<br />(1800,1515)
+        </div>
+        <div
+          class="productionxy"
+          style="position: absolute; top: 344px; left: 1832px"
+        ></div>
+        <div
+          class="productionxylabel"
+          style="
+            position: absolute;
+            top: 355px;
+            left: 1833px;
+            text-indent: -4.5ch;
+            z-index: 100;
+          "
+        >
+          printshop #161<br />(1833,345)
+        </div>
+      </div>
+      <div
+        id="altarsxy"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          display: none;
+        "
+      >
+        <div
+          class="altarxy"
+          style="position: absolute; top: 708px; left: 421px"
+        ></div>
+        <div
+          class="altarxylabel"
+          style="
+            position: absolute;
+            top: 719px;
+            left: 422px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          altar #125<br />(422,709)
+        </div>
+        <div
+          class="altarxy"
+          style="position: absolute; top: 1443px; left: 750px"
+        ></div>
+        <div
+          class="altarxylabel"
+          style="
+            position: absolute;
+            top: 1454px;
+            left: 751px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          altar #126<br />(751,1444)
+        </div>
+        <div
+          class="altarxy"
+          style="position: absolute; top: 881px; left: 842px"
+        ></div>
+        <div
+          class="altarxylabel"
+          style="
+            position: absolute;
+            top: 892px;
+            left: 843px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          altar #127<br />(843,882)
+        </div>
+        <div
+          class="altarxy"
+          style="position: absolute; top: 544px; left: 1185px"
+        ></div>
+        <div
+          class="altarxylabel"
+          style="
+            position: absolute;
+            top: 555px;
+            left: 1186px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          altar #128<br />(1186,545)
+        </div>
+        <div
+          class="altarxy"
+          style="position: absolute; top: 922px; left: 1833px"
+        ></div>
+        <div
+          class="altarxylabel"
+          style="
+            position: absolute;
+            top: 933px;
+            left: 1834px;
+            text-indent: -2.5ch;
+            z-index: 100;
+          "
+        >
+          altar #129<br />(1834,923)
+        </div>
+      </div>
+      <div
+        id="fortsxy"
+        style="
+          width: 1863px;
+          height: 1551px;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          display: none;
+        "
+      >
+        <div
+          class="fortxy"
+          style="position: absolute; top: 542px; left: 31px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 553px;
+            left: 32px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #130<br />(32,543)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1101px; left: 85px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1112px;
+            left: 86px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #131<br />(86,1102)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 255px; left: 128px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 266px;
+            left: 129px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #132<br />(129,256)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 703px; left: 228px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 714px;
+            left: 229px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #133<br />(229,704)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1233px; left: 276px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1244px;
+            left: 277px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #134<br />(277,1234)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 496px; left: 346px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 507px;
+            left: 347px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #135<br />(347,497)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 317px; left: 374px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 328px;
+            left: 375px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #136<br />(375,318)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1459px; left: 403px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1470px;
+            left: 404px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #137<br />(404,1460)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1000px; left: 418px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1011px;
+            left: 419px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #138<br />(419,1001)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 794px; left: 614px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 805px;
+            left: 615px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #139<br />(615,795)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 34px; left: 763px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 45px;
+            left: 764px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #140<br />(764,35)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 270px; left: 766px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 281px;
+            left: 767px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #141<br />(767,271)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1514px; left: 783px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1525px;
+            left: 784px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #142<br />(784,1515)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1077px; left: 794px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1088px;
+            left: 795px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #143<br />(795,1078)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1055px; left: 968px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1066px;
+            left: 969px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #144<br />(969,1056)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 722px; left: 1012px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 733px;
+            left: 1013px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #145<br />(1013,723)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1243px; left: 1052px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1254px;
+            left: 1053px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #146<br />(1053,1244)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 564px; left: 1143px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 575px;
+            left: 1144px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #147<br />(1144,565)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 247px; left: 1174px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 258px;
+            left: 1175px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #148<br />(1175,248)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1139px; left: 1241px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1150px;
+            left: 1242px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #149<br />(1242,1140)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1440px; left: 1281px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1451px;
+            left: 1282px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #150<br />(1282,1441)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 700px; left: 1296px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 711px;
+            left: 1297px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #151<br />(1297,701)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 559px; left: 1519px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 570px;
+            left: 1520px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #152<br />(1520,560)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1262px; left: 1622px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1273px;
+            left: 1623px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #153<br />(1623,1263)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 895px; left: 1664px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 906px;
+            left: 1665px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #154<br />(1665,896)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 309px; left: 1711px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 320px;
+            left: 1712px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #155<br />(1712,310)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1093px; left: 1810px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1104px;
+            left: 1811px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #156<br />(1811,1094)
+        </div>
+        <div
+          class="fortxy"
+          style="position: absolute; top: 1499px; left: 1833px"
+        ></div>
+        <div
+          class="fortxylabel"
+          style="
+            position: absolute;
+            top: 1510px;
+            left: 1834px;
+            text-indent: -2ch;
+            z-index: 100;
+          "
+        >
+          fort #157<br />(1834,1500)
+        </div>
+      </div>
+    </div>
+        </div>
+
+        
+        </div>
+
+        </div>
+
+        <!-- Rüzgar Akışı (JS ile haritanın tam ortasına konumlandırılıyor) -->
+        <div id="wind-indicator-container">
+            <div id="wind-layer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="assets/js/wind.js"></script>
+<script src="assets/js/map.js"></script>
+<script src="assets/js/layers.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/ports.js"></script>
+<script src="assets/js/draw.js"></script>
+<script src="assets/js/trade.js"></script>
+<script src="assets/js/sidebar.js"></script>
+
+</body>
+</html>

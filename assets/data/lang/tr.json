@@ -1,0 +1,32 @@
+{
+  "app": {
+    "title": "Sea Battle Wind Tracer"
+  },
+  "sidebar": {
+    "brand": "Sea Battle",
+    "subtitle": "Wind Tracer",
+    "windControl": "Rüzgar Kontrolü",
+    "date": "Tarih",
+    "time": "Saat",
+    "windDirection": "Rüzgar Yönü",
+    "mapLayers": "Harita Katmanları",
+    "ports": "Limanlar",
+    "lighthouses": "Fenerler",
+    "fastTravel": "Hızlı Seyahat",
+    "islands": "Kişisel Adalar",
+    "production": "Üretim Alanları",
+    "altars": "Sunaklar",
+    "forts": "Kaleler",
+    "pvpBorder": "PvP Sınırı",
+    "language": "Dil"
+  },
+  "tooltip": {
+    "port": "Liman",
+    "clickForDetails": "Detaylar için tıklayın",
+    "noData": "Veri bulunamadı"
+  },
+  "languages": {
+    "tr": "Türkçe",
+    "en": "English"
+  }
+}

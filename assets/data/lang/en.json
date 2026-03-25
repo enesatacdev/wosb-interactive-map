@@ -1,0 +1,32 @@
+{
+  "app": {
+    "title": "Sea Battle Wind Tracer"
+  },
+  "sidebar": {
+    "brand": "Sea Battle",
+    "subtitle": "Wind Tracer",
+    "windControl": "Wind Control",
+    "date": "Date",
+    "time": "Time",
+    "windDirection": "Wind Direction",
+    "mapLayers": "Map Layers",
+    "ports": "Ports",
+    "lighthouses": "Lighthouses",
+    "fastTravel": "Fast Travel",
+    "islands": "Personal Islands",
+    "production": "Production Sites",
+    "altars": "Altars",
+    "forts": "Forts",
+    "pvpBorder": "PvP Border",
+    "language": "Language"
+  },
+  "tooltip": {
+    "port": "Port",
+    "clickForDetails": "Click for details",
+    "noData": "No data found"
+  },
+  "languages": {
+    "tr": "Türkçe",
+    "en": "English"
+  }
+}
