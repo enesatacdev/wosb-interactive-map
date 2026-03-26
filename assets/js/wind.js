@@ -3,9 +3,9 @@
  * 16-point compass, -3.75° per minute, quantized to 11.25° steps.
  */
 
-const DEGREES_PER_MINUTE = 3.75;
-let REF_DATE = new Date("2026-03-25T22:50:00");
-let REF_ANGLE = 45;
+const DEGREES_PER_MINUTE = 2.25;
+let REF_DATE = new Date("2026-03-26T04:10:00");
+let REF_ANGLE = 157.5; // SSE (SSE is 157.5 if South is 180)
 
 const COMPASS_POINTS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 
