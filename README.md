@@ -2,7 +2,6 @@
 
 A comprehensive, real-time interactive map dashboard for the game **World of Sea Battle**. This tool allows players to track wind conditions, discover the most profitable trade routes, manage port information, and plan their naval strategies with specialized drawing tools.
 
-![Dashboard Preview](assets/img/preview.png) *(Note: Placeholder for actual preview image)*
 
 ## 🌟 Features
 
