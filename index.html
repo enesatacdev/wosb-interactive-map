@@ -13,11 +13,57 @@
 <body>
 
 <div id="app">
-    <!-- TOGGLE BUTTON -->
-    <button id="sidebar-toggle" title="Menüyü Aç/Kapat">☰</button>
+    <!-- NAVIGATION DOCK (LEFT FIXED) -->
+    <div id="nav-dock">
+        <div class="nav-items-top">
+            <div class="nav-item" id="nav-wind" data-section="wind">
+                <span class="nav-item-icon">🌬️</span>
+                <span class="nav-item-label" data-i18n="sidebar.windControl">Rüzgar Kontrolü</span>
+            </div>
+            <div class="nav-item" id="nav-map" data-section="map">
+                <span class="nav-item-icon">🗺️</span>
+                <span class="nav-item-label" data-i18n="sidebar.mapLayers">Harita Katmanları</span>
+            </div>
+            <div class="nav-item" id="nav-trade" data-section="trade">
+                <span class="nav-item-icon">📈</span>
+                <span class="nav-item-label" data-i18n="tradeSys.toggleBtn">Ticaret Önerileri</span>
+            </div>
+            <div class="nav-item" id="nav-regional" data-section="regional">
+                <span class="nav-item-icon" style="background-image: url('assets/img/regional_point.png'); background-size: cover; width: 24px; height: 24px; display: inline-block;"></span>
+                <span class="nav-item-label" data-i18n="regionalPoints.title">Bölgesel Puanlar</span>
+            </div>
+            <div class="nav-item" id="nav-production" data-section="production">
+                <span class="nav-item-icon">🏭</span>
+                <span class="nav-item-label" data-i18n="sidebar.production">Üretim Alanları</span>
+            </div>
+            <div class="nav-item" id="nav-draw" data-section="draw">
+                <span class="nav-item-icon">🎨</span>
+                <span class="nav-item-label" data-i18n="sidebar.drawtools">Çizim Araçları</span>
+            </div>
+            <div class="nav-item" id="nav-ports" data-section="ports">
+                <span class="nav-item-icon">⚓</span>
+                <span class="nav-item-label" data-i18n="sidebar.ports">Limanlar</span>
+            </div>
+        </div>
 
-    <!-- SOL PANEL: KONTROLLER -->
-    <div id="sidebar">
+        <!-- DOCK BOTTOM: Language Selector -->
+        <div class="nav-dock-bottom">
+            <div class="lang-mini-switcher">
+                <select id="lang-select" class="lang-select-dock">
+                    <option value="tr">TR</option>
+                    <option value="en">EN</option>
+                    <option value="ru">RU</option>
+                    <option value="es">ES</option>
+                    <option value="zh">ZH</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOL PANEL: DRAWER CONTENT -->
+    <div id="sidebar" class="collapsed">
+        <div class="sidebar-body">
+            <!-- HEADER (Global for sidebar) -->
         <div class="px-2 pt-2 pb-4 border-b border-slate-700/50">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-xl shadow-lg shadow-sky-500/20">⚓</div>
@@ -28,119 +74,198 @@
             </div>
         </div>
 
-        <div class="px-2 pt-4">
-            <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
-                <span data-i18n="sidebar.windControl">Rüzgar Kontrolü</span>
-            </h2>
-            <div class="space-y-3">
-                <div>
-                    <label for="dateInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.date">Tarih</label>
-                    <input type="date" id="dateInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
-                </div>
-                <div>
-                    <label for="timeInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.time">Saat</label>
-                    <input type="time" id="timeInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
-                </div>
-            </div>
-            <div class="mt-4 p-4 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/30">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="sidebar.windDirection">Rüzgar Yönü</div>
-                    <div class="flex items-center gap-1">
-                         <button id="btn-wind-prev" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" title="Sola Döndür (-11.25°)">↺</button>
-                         <button id="btn-wind-sync" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-400 transition-all shadow-lg" title="Şu ana eşitle / Sync to Now">📍</button>
-                         <button id="btn-wind-next" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" title="Sağa Döndür (+11.25°)">↻</button>
+        <!-- RÜZGAR KONTROLÜ SECTION -->
+        <div id="side-content-wind" class="side-section">
+            <div class="px-2 pt-4">
+                <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                    <span data-i18n="sidebar.windControl">Rüzgar Kontrolü</span>
+                </h2>
+                <div class="space-y-3">
+                    <div>
+                        <label for="dateInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.date">Tarih</label>
+                        <input type="date" id="dateInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
+                    </div>
+                    <div>
+                        <label for="timeInput" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" data-i18n="sidebar.time">Saat</label>
+                        <input type="time" id="timeInput" class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-600/50 bg-slate-800/50 text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
                     </div>
                 </div>
-                
-                <div class="w-full mt-2 mb-3">
-                    <div class="flex justify-between text-[10px] mb-1 text-slate-400">
-                        <span data-i18n="sidebar.precision">Hassas Açı Ayarı</span>
-                        <span id="wind-slider-val" class="text-sky-400 font-bold">0°</span>
+                <div class="mt-4 p-4 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/30">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="sidebar.windDirection">Rüzgar Yönü</div>
+                        <div class="flex items-center gap-1">
+                             <button id="btn-wind-prev" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" data-i18n-title="sidebar.tooltips.windPrev" title="Sola Döndür (-11.25°)">↺</button>
+                             <button id="btn-wind-sync" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-400 transition-all shadow-lg" data-i18n-title="sidebar.tooltips.windSync" title="Şu ana eşitle / Sync to Now">📍</button>
+                             <button id="btn-wind-next" class="w-7 h-7 rounded border border-slate-600 bg-slate-700 text-white flex items-center justify-center hover:bg-sky-500 hover:border-sky-400 transition-all shadow-lg" data-i18n-title="sidebar.tooltips.windNext" title="Sağa Döndür (+11.25°)">↻</button>
+                             <button id="btn-wind-reset" class="w-7 h-7 rounded border border-red-600 bg-red-700 text-white flex items-center justify-center hover:bg-red-500 hover:border-red-400 transition-all shadow-lg text-[10px]" data-i18n-title="sidebar.tooltips.windReset" title="Manuel ayarları sıfırla / Fabrika değerlerine dön">🔄</button>
+                        </div>
                     </div>
-                    <input type="range" id="wind-slider" min="0" max="359" step="1" value="0" class="w-full accent-sky-500 cursor-pointer">
-                </div>
+                    
+                    <div class="w-full mt-2 mb-3">
+                        <div class="flex justify-between text-[10px] mb-1 text-slate-400">
+                            <span data-i18n="sidebar.precision">Hassas Açı Ayarı</span>
+                            <span id="wind-slider-val" class="text-sky-400 font-bold">0°</span>
+                        </div>
+                        <input type="range" id="wind-slider" min="0" max="359" step="1" value="0" class="w-full accent-sky-500 cursor-pointer">
+                    </div>
 
-
-                    <div class="flex items-center gap-1">
-                            
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <span id="angleValue" class="text-3xl font-extrabold text-sky-400 tabular-nums">0</span>
-                    <span class="text-lg font-bold text-slate-500">°</span>
-                    <span id="compassText" class="ml-2 text-sm font-bold text-sky-200 bg-sky-900/50 px-2 py-1 rounded">N</span>
+                    <div class="flex items-baseline gap-1">
+                        <span id="angleValue" class="text-3xl font-extrabold text-sky-400 tabular-nums">0</span>
+                        <span class="text-lg font-bold text-slate-500">°</span>
+                        <span id="compassText" class="ml-2 text-sm font-bold text-sky-200 bg-sky-900/50 px-2 py-1 rounded">N</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="px-2 mt-5">
-            <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
-                <span data-i18n="sidebar.mapLayers">Harita Katmanları</span>
-            </h2>
-            <div id="toolbar-container" class="space-y-1">
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.ports">Limanlar</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-ports" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.lighthouses">Fenerler</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-lighthouses" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.fastTravel">Hızlı Seyahat</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-fast-travel" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.islands">Kişisel Adalar</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-island" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.production">Üretim Alanları</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-production" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.altars">Sunaklar</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-altar" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.forts">Kaleler</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-fort" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.pvpBorder">PvP Sınırı</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-circle" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-                <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
-                    <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.windLayer">Rüzgar Çizgileri</span>
-                    <span class="toggle-switch"><input type="checkbox" id="show-wind" checked="checked"><span class="toggle-slider"></span></span>
-                </label>
-
+        <!-- HARİTA KATMANLARI SECTION -->
+        <div id="side-content-map" class="side-section">
+            <div class="px-2 pt-4">
+                <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                    <span data-i18n="sidebar.mapLayers">Harita Katmanları</span>
+                </h2>
+                <div id="toolbar-container" class="space-y-1">
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.ports">Limanlar</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-ports" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.lighthouses">Fenerler</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-lighthouses" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.fastTravel">Hızlı Seyahat</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-fast-travel" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.islands">Kişisel Adalar</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-island" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.production">Üretim Alanları</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-production" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.altars">Sunaklar</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-altar" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.forts">Kaleler</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-fort" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.pvpBorder">PvP Sınırı</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-circle" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="sidebar.windLayer">Rüzgar Çizgileri</span>
+                        <span class="toggle-switch"><input type="checkbox" id="show-wind" checked="checked"><span class="toggle-slider"></span></span>
+                    </label>
+                    <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-slate-300 group-hover:text-white transition-colors" data-i18n="regionalPoints.title">Bölgesel Puanlar</span>
+                        </div>
+                        <span class="toggle-switch"><input type="checkbox" id="show-regional-points" checked><span class="toggle-slider"></span></span>
+                    </label>
+                </div>
             </div>
         </div>
 
+        <!-- TİCARET ÖNERİLERİ SECTION -->
+        <div id="side-content-trade" class="side-section">
+            <div id="trade-panel-container"></div>
+        </div>
+
+        <!-- REGIONAL POINTS SECTION -->
+        <div id="side-content-regional" class="side-section">
+            <div class="px-2 pt-4">
+                <div class="accordion-section active">
+                    <div class="accordion-header flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group" onclick="toggleAccordion(this)">
+                        <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest flex items-center gap-2 m-0">
+                            <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                            <span data-i18n="regionalPoints.listTitle">Bölgesel Kaynak Listesi</span>
+                        </h2>
+                        <span class="accordion-arrow text-[10px] opacity-40">▼</span>
+                    </div>
+                    <div class="accordion-content pt-2">
+                        <div id="regional-filter-container" class="flex flex-wrap gap-1.5 mb-3 px-1">
+                            <!-- Kategoriler buraya yüklenecek -->
+                        </div>
+                        <div id="regional-list-container" class="space-y-1 max-h-[calc(100vh-210px)] overflow-y-auto custom-scrollbar pr-1">
+                            <!-- JavaScript will populate this -->
+                            <div class="text-center py-8 text-slate-500 text-xs italic" data-i18n="tooltip.noData">Yükleniyor...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÜRETİM ALANLARI SECTION -->
+        <div id="side-content-production" class="side-section">
+            <div class="px-2 pt-4">
+                <div class="accordion-section active mb-2">
+                    <div class="accordion-header flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group" onclick="toggleAccordion(this)">
+                        <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest flex items-center gap-2 m-0">
+                             <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                             <span data-i18n="sidebar.production">Üretim Alanları</span>
+                        </h2>
+                        <span class="accordion-arrow text-[10px] opacity-40">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div id="production-list-section" class="mt-2 space-y-2 mb-4">
+                            <div class="relative px-2">
+                                <input type="text" id="production-search-input" class="w-full bg-slate-800/40 border border-slate-700/40 rounded-xl py-2 pl-9 pr-4 text-[11px] text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 transition-all" placeholder="Üretim alanı ara...">
+                                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-[11px] opacity-50">🔍</span>
+                            </div>
+                            <!-- Kategori Filtreleri -->
+                            <div id="production-filter-container" class="mb-3 px-2 mt-2">
+                                <!-- JS tarafından doldurulacak -->
+                            </div>
+                            <div id="production-list-container" class="max-h-[calc(100vh-340px)] overflow-y-auto px-1 custom-scrollbar space-y-0.5">
+                                <!-- Üretim alanları buraya yüklenecek -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PORTS SECTION (Now 'Limanlar') -->
+        <div id="side-content-ports" class="side-section">
+            <div class="px-2 pt-4">
+                <!-- Port Editor Section (Settings) -->
+                <div class="accordion-section active">
+                    <div class="accordion-header flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-700/30 transition-colors cursor-pointer group" onclick="toggleAccordion(this)">
+                        <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest flex items-center gap-2 m-0">
+                             <span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block"></span>
+                             <span data-i18n="portSettings.title">Liman Ayarları</span>
+                        </h2>
+                        <span class="accordion-arrow text-[10px] opacity-40">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <!-- Port Search Section -->
+                        <div class="relative px-2 py-2 mb-2">
+                            <input type="text" id="port-search-input" class="w-full bg-slate-800/40 border border-slate-700/40 rounded-xl py-2 pl-9 pr-4 text-[11px] text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500/50 transition-all font-semibold" placeholder="Liman ara...">
+                            <span class="absolute left-5 top-1/2 -translate-y-1/2 text-[11px] opacity-50">🔍</span>
+                        </div>
+                        <div id="port-settings-list" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)] pr-1 custom-scrollbar pt-2">
+                            <!-- JavaScript will populate this -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- SAĞ PANEL: HARİTA VE VİEWPORT -->
     <div id="map-viewport">
-
-        <!-- Dil seçici (sağ üstte) -->
-        <div id="lang-selector-float">
-            <select id="lang-select">
-                <option value="tr">🇹🇷 TR</option>
-                <option value="en">🇬🇧 EN</option>
-            </select>
-        </div>
-    
         <div id="canvas-wrapper">
-            <div
-      id="canvas"
-      style="
-        background-image: url(&quot;assets/img/mapa.png&quot;);
-        width: 1863px;
-        height: 1551px;
-      "
-    >
+            <div id="canvas" style="background-image: url(&quot;assets/img/mapa.png&quot;); width: 1863px; height: 1551px;">
+                <!-- Regional Points Layer -->
+                <div id="regional-points"></div>
       <!-- VURKAÇOĞLU Watermark -->
       <div style="position: absolute; top: -285px; left: 0; width: 1863px; text-align: center; font-size: 200px; font-weight: 1000; color: rgba(255, 255, 255, 0.08); font-family: 'Inter', sans-serif; pointer-events: none; letter-spacing: 34px; text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5); text-transform: uppercase;">
         VURKAÇOĞLU
@@ -2768,398 +2893,7 @@
           title="Personal Island Spot"
           alt="Personal Island Spot"
         />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1446px; left: 225px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 727px; left: 326px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1235px; left: 717px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 635px; left: 979px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 745px; left: 1005px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 938px; left: 1118px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1196px; left: 1258px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/coal.png"
-          class="poi-icon production"
-          style="position: absolute; top: 812px; left: 1637px"
-          title="Coal Mine"
-          alt="Coal Mine"
-        />
-        <img
-          src="assets/img/copper.png"
-          class="poi-icon production"
-          style="position: absolute; top: 623px; left: 804px"
-          title="Copper Mine"
-          alt="Copper Mine"
-        />
-        <img
-          src="assets/img/copper.png"
-          class="poi-icon production"
-          style="position: absolute; top: 283px; left: 958px"
-          title="Copper Mine"
-          alt="Copper Mine"
-        />
-        <img
-          src="assets/img/copper.png"
-          class="poi-icon production"
-          style="position: absolute; top: 842px; left: 993px"
-          title="Copper Mine"
-          alt="Copper Mine"
-        />
-        <img
-          src="assets/img/copper.png"
-          class="poi-icon production"
-          style="position: absolute; top: 466px; left: 1207px"
-          title="Copper Mine"
-          alt="Copper Mine"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1264px; left: 274px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 889px; left: 416px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 506px; left: 460px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1076px; left: 1054px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 974px; left: 1341px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/farm.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1041px; left: 1752px"
-          title="Farm"
-          alt="Farm"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 244px; left: 243px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1145px; left: 327px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 631px; left: 567px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 334px; left: 867px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 113px; left: 947px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 598px; left: 1114px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 684px; left: 1230px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 235px; left: 1618px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1418px; left: 1642px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/iron.png"
-          class="poi-icon production"
-          style="position: absolute; top: 503px; left: 1705px"
-          title="Iron Mine"
-          alt="Iron Mine"
-        />
-        <img
-          src="assets/img/resin.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1029px; left: 258px"
-          title="Resin Production"
-          alt="Resin Production"
-        />
-        <img
-          src="assets/img/resin.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1015px; left: 567px"
-          title="Resin Production"
-          alt="Resin Production"
-        />
-        <img
-          src="assets/img/resin.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1359px; left: 1209px"
-          title="Resin Production"
-          alt="Resin Production"
-        />
-        <img
-          src="assets/img/resin.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1194px; left: 1745px"
-          title="Resin Production"
-          alt="Resin Production"
-        />
-        <img
-          src="assets/img/rum.png"
-          class="poi-icon production"
-          style="position: absolute; top: 496px; left: 63px"
-          title="Rum Production"
-          alt="Rum Production"
-        />
-        <img
-          src="assets/img/rum.png"
-          class="poi-icon production"
-          style="position: absolute; top: 710px; left: 445px"
-          title="Rum Production"
-          alt="Rum Production"
-        />
-        <img
-          src="assets/img/rum.png"
-          class="poi-icon production"
-          style="position: absolute; top: 346px; left: 662px"
-          title="Rum Production"
-          alt="Rum Production"
-        />
-        <img
-          src="assets/img/rum.png"
-          class="poi-icon production"
-          style="position: absolute; top: 454px; left: 1436px"
-          title="Rum Production"
-          alt="Rum Production"
-        />
-        <img
-          src="assets/img/rum.png"
-          class="poi-icon production"
-          style="position: absolute; top: 700px; left: 1516px"
-          title="Rum Production"
-          alt="Rum Production"
-        />
-        <img
-          src="assets/img/water.png"
-          class="poi-icon production"
-          style="position: absolute; top: 178px; left: 171px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/water.png"
-          class="poi-icon production"
-          style="position: absolute; top: 83px; left: 494px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/water.png"
-          class="poi-icon production"
-          style="position: absolute; top: 94px; left: 1339px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/water.png"
-          class="poi-icon production"
-          style="position: absolute; top: 117px; left: 1580px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/water.png"
-          class="poi-icon production"
-          style="position: absolute; top: 139px; left: 1754px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 926px; left: 94px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 406px; left: 297px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1437px; left: 570px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 708px; left: 617px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1170px; left: 629px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 514px; left: 718px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1359px; left: 925px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 853px; left: 1275px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 554px; left: 1347px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1423px; left: 1427px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 873px; left: 1464px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/wood.png"
-          class="poi-icon production"
-          style="position: absolute; top: 1341px; left: 1707px"
-          title="Wood Harvest Site"
-          alt="Wood Harvest Site"
-        />
-        <img
-          src="assets/img/water-r.png"
-          class="poi-icon production"
-          style="position: absolute; top: 163px; left: 16px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
-        <img
-          src="assets/img/water-r.png"
-          class="poi-icon production"
-          style="position: absolute; top: 19px; left: 1056px"
-          title="Ice Mining (water)"
-          alt="Ice Mining (water)"
-        />
+
         <img
           src="assets/img/altar.png"
           class="altar"
@@ -6047,19 +5781,42 @@
         <div id="wind-indicator-container">
             <div id="wind-layer"></div>
         </div>
+        <!-- Bottom Right Dock -->
+        <div class="bottom-right-dock">
+            <!-- Buy Me A Rum -->
+            <a href="https://buymeacoffee.com/enesatacdev" target="_blank" class="buy-rum-btn">
+                <span class="buy-rum-icon">🏴‍☠️</span>
+                <span class="buy-rum-text" data-i18n="visitor.buyrum">Bana Rom Ismarla</span>
+            </a>
+
+            <!-- Visitor Counter -->
+            <div id="visitor-counter" class="visitor-counter">
+                <div class="visitor-icon-wrapper">
+                    <span class="visitor-icon">👥</span>
+                </div>
+                <div class="visitor-info">
+                    <span id="visitor-label" class="visitor-label" data-i18n="visitor.count">Ziyaretçi Sayısı</span>
+                    <span id="visitor-count-val" class="visitor-count">1,284</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/js/wind.js"></script>
+<script src="assets/js/wind2.js"></script>
 <script src="assets/js/map.js"></script>
 <script src="assets/js/layers.js"></script>
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/ports.js"></script>
+<script id="regional-points-script" src="assets/js/regional_points.js"></script>
+<script src="assets/js/production.js"></script>
+<script src="assets/js/port_settings.js"></script>
 <script src="assets/js/draw.js"></script>
 <script src="assets/js/trade.js"></script>
 <script src="assets/js/sidebar.js"></script>
+<script src="assets/js/visitor.js"></script>
 
 </body>
 </html>

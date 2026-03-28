@@ -3,9 +3,9 @@
  * 16-point compass, -3.75° per minute, quantized to 11.25° steps.
  */
 
-const DEGREES_PER_MINUTE = 2.25;
+const DEGREES_PER_MINUTE = 3.0; // Sayfadaki 10 fotoğraf analizinden: 60 dk'da 180 derece (Saat Yönü Tersi)
 let REF_DATE = new Date("2026-03-26T04:10:00");
-let REF_ANGLE = 157.5; // SSE (SSE is 157.5 if South is 180)
+let REF_ANGLE = 270; // 04:10'da tam BATI (270)
 
 const COMPASS_POINTS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 
@@ -82,11 +82,11 @@ function calculateWindDirection() {
     const diffMs = currentSelectedDate - REF_DATE;
     const diffMinutes = diffMs / (1000 * 60);
 
-    // Düşüş: Counter-Clockwise
+    // Düşüş: Saat yönü tersine (Counter-Clockwise) formülü
     let exactAngle = REF_ANGLE - (diffMinutes * DEGREES_PER_MINUTE);
 
-    // Rüzgar anlık dönmez, 11.25 derecelik adımlarla atlar (16 point compass half-steps)
-    let displayRotation = Math.round(exactAngle / 11.25) * 11.25;
+    // Kesin (minimetrik) rotasyon: Artık 11.25'e yuvarlamıyoruz, tam açıyı kullanıyoruz.
+    let displayRotation = exactAngle % 360;
 
     displayRotation = displayRotation % 360;
     if (displayRotation < 0) {
@@ -94,7 +94,10 @@ function calculateWindDirection() {
     }
     if (displayRotation === 360) displayRotation = 0;
 
-    windLayer.style.transform = `rotate(${displayRotation - 180}deg)`;
+    // ESKİ SVG'den kalan "- 180" ofseti SİLİNDİ!
+    // Chevron okları (v) CSS'te 45deg ile dik yukarı (Kuzey, 0°) bakar.
+    // Direk displayRotation ile döndürmek gerekir.
+    windLayer.style.transform = `rotate(${displayRotation}deg)`;
     angleValue.textContent = displayRotation.toFixed(2).replace('.00', '');
     if (compassText) {
         compassText.textContent = getCompassText(displayRotation);
@@ -184,9 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const diffMs = now - REF_DATE;
                 const totalMinutes = Math.floor(diffMs / 60000);
                 
-                // rawRotation = (REF_ANGLE + totalMinutes * DEGREES_PER_MINUTE) % 360
-                // We want rawRotation to exactly equal targetDeg
-                REF_ANGLE = targetDeg - (totalMinutes * DEGREES_PER_MINUTE);
+                // REF_ANGLE matematigi saat yonu tersine uyarli:
+                // exactAngle = REF_ANGLE - (totalMinutes * DEGREES_PER_MINUTE)
+                // O halde: REF_ANGLE = targetDeg + (totalMinutes * DEGREES_PER_MINUTE)
+                REF_ANGLE = targetDeg + (totalMinutes * DEGREES_PER_MINUTE);
                 localStorage.setItem('sb-wind-ref-angle', REF_ANGLE);
                 calculateWindDirection();
             });

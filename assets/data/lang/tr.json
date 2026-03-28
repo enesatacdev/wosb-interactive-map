@@ -28,5 +28,8 @@
   "languages": {
     "tr": "Türkçe",
     "en": "English"
+  },
+  "visitor": {
+    "count": "Ziyaretçi Sayısı"
   }
 }

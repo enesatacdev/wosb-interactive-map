@@ -8,11 +8,11 @@
 
 const PortManager = (() => {
     const PORT_TYPES = {
-        small: { label: 'Küçük Liman', color: '#fbbf24', icon: '🏘️' },
-        neutral: { label: 'Tarafsız Liman', color: '#60a5fa', icon: '⚓' },
-        faction: { label: 'Kale Limanı', color: '#f97316', icon: '🏰' },
-        pirate: { label: 'Korsan Limanı', color: '#ef4444', icon: '☠️' },
-        unknown: { label: 'Liman', color: '#94a3b8', icon: '📍' }
+        small: { label: () => i18n.t('ports.types.small'), color: '#fbbf24', icon: '🏘️' },
+        neutral: { label: () => i18n.t('ports.types.neutral'), color: '#60a5fa', icon: '⚓' },
+        faction: { label: () => i18n.t('ports.types.faction'), color: '#f97316', icon: '🏰' },
+        pirate: { label: () => i18n.t('ports.types.pirate'), color: '#ef4444', icon: '☠️' },
+        unknown: { label: () => i18n.t('ports.types.unknown'), color: '#94a3b8', icon: '📍' }
     };
 
     const PRODUCTS = [
@@ -67,6 +67,51 @@ const PortManager = (() => {
         "South Bastion":[11,22,16,16,41,20,39,25,19,13,9,26,21,9,30,31,32,14,63,88]
     };
 
+    const PORTS_COORDINATES = {
+      "assab": { "name": "Assab", "type": "small", "icon": "assets/img/k.png", "x": 67, "y": 1181 },
+      "cursed-city": { "name": "Cursed City", "type": "neutral", "icon": "assets/img/n.png", "x": 71, "y": 606 },
+      "al-khalif": { "name": "Al-Khalif", "type": "small", "icon": "assets/img/k.png", "x": 80, "y": 1363 },
+      "nisogora": { "name": "Nisogora", "type": "neutral", "icon": "assets/img/n.png", "x": 136, "y": 404 },
+      "nordberg": { "name": "Nordberg", "type": "faction", "icon": "assets/img/f.png", "x": 187, "y": 271 },
+      "west-bastion": { "name": "West Bastion", "type": "neutral", "icon": "assets/img/n.png", "x": 184, "y": 788 },
+      "sharhat": { "name": "Sharhat", "type": "small", "icon": "assets/img/k.png", "x": 260, "y": 1075 },
+      "oneg": { "name": "Oneg", "type": "neutral", "icon": "assets/img/n.png", "x": 311, "y": 91 },
+      "naabad-stronghold": { "name": "Naabad Stronghold", "type": "pirate", "icon": "assets/img/p.png", "x": 373, "y": 646 },
+      "gelbion": { "name": "Gelbion", "type": "neutral", "icon": "assets/img/n.png", "x": 453, "y": 312 },
+      "masadora": { "name": "Masadora", "type": "neutral", "icon": "assets/img/n.png", "x": 469, "y": 799 },
+      "devios": { "name": "Devios", "type": "neutral", "icon": "assets/img/n.png", "x": 510, "y": 1147 },
+      "el-tigre": { "name": "El Tigre", "type": "faction", "icon": "assets/img/f.png", "x": 522, "y": 1334 },
+      "surako": { "name": "Surako", "type": "faction", "icon": "assets/img/f.png", "x": 523, "y": 499 },
+      "corsa-nois-bay": { "name": "Corsa-Nois Bay", "type": "pirate", "icon": "assets/img/p.png", "x": 642, "y": 72 },
+      "bridgetown": { "name": "Bridgetown", "type": "neutral", "icon": "assets/img/n.png", "x": 700, "y": 806 },
+      "san-cristobel": { "name": "San Cristobel", "type": "neutral", "icon": "assets/img/n.png", "x": 721, "y": 1320 },
+      "charleston": { "name": "Charleston", "type": "neutral", "icon": "assets/img/n.png", "x": 733, "y": 956 },
+      "nevis": { "name": "Nevis", "type": "neutral", "icon": "assets/img/n.png", "x": 796, "y": 509 },
+      "pirate-city": { "name": "Pirate City", "type": "pirate", "icon": "assets/img/p.png", "x": 813, "y": 1389 },
+      "everston": { "name": "Everston", "type": "neutral", "icon": "assets/img/n.png", "x": 837, "y": 202 },
+      "laguna-blanco": { "name": "Laguna Blanco", "type": "neutral", "icon": "assets/img/n.png", "x": 945, "y": 939 },
+      "aruba": { "name": "Aruba", "type": "neutral", "icon": "assets/img/n.png", "x": 1053, "y": 324 },
+      "san-martinas": { "name": "San Martinas", "type": "neutral", "icon": "assets/img/n.png", "x": 1059, "y": 1345 },
+      "tortuga": { "name": "Tortuga", "type": "pirate", "icon": "assets/img/p.png", "x": 1099, "y": 741 },
+      "la-navidad": { "name": "La Navidad", "type": "neutral", "icon": "assets/img/n.png", "x": 1214, "y": 888 },
+      "thermopylae": { "name": "Thermopylae", "type": "neutral", "icon": "assets/img/n.png", "x": 1230, "y": 587 },
+      "aldansk": { "name": "Aldansk", "type": "faction", "icon": "assets/img/f.png", "x": 1244, "y": 103 },
+      "south-bastion": { "name": "South Bastion", "type": "neutral", "icon": "assets/img/n.png", "x": 1267, "y": 1257 },
+      "gray-island": { "name": "Gray Island", "type": "neutral", "icon": "assets/img/n.png", "x": 1313, "y": 373 },
+      "st.-john": { "name": "St. John", "type": "faction", "icon": "assets/img/f.png", "x": 1345, "y": 986 },
+      "fiji": { "name": "Fiji", "type": "neutral", "icon": "assets/img/n.png", "x": 1424, "y": 717 },
+      "severoangelsk": { "name": "Severoangelsk", "type": "neutral", "icon": "assets/img/n.png", "x": 1433, "y": 110 },
+      "bord-radel": { "name": "Bord Radel", "type": "neutral", "icon": "assets/img/n.png", "x": 1498, "y": 1370 },
+      "north-bastion": { "name": "North Bastion", "type": "neutral", "icon": "assets/img/n.png", "x": 1523, "y": 325 },
+      "los-catuano": { "name": "Los Catuano", "type": "neutral", "icon": "assets/img/n.png", "x": 1552, "y": 1132 },
+      "brandport": { "name": "Brandport", "type": "faction", "icon": "assets/img/f.png", "x": 1611, "y": 634 },
+      "santa-maria": { "name": "Santa Maria", "type": "faction", "icon": "assets/img/f.png", "x": 1686, "y": 991 },
+      "northside": { "name": "Northside", "type": "neutral", "icon": "assets/img/n.png", "x": 1688, "y": 171 },
+      "puerto-salada": { "name": "Puerto Salada", "type": "neutral", "icon": "assets/img/n.png", "x": 1709, "y": 1202 },
+      "freebooter-bay": { "name": "Freebooter Bay", "type": "pirate", "icon": "assets/img/p.png", "x": 1733, "y": 805 },
+      "freedom-bay": { "name": "Freedom Bay", "type": "faction", "icon": "assets/img/f.png", "x": 1739, "y": 478 }
+    };
+
     let tradeData = {};
     let portsData = {};
     let activePort = null;
@@ -84,11 +129,23 @@ const PortManager = (() => {
         createTooltip(viewport);
         addPortIdToLabels();
 
-        viewport.addEventListener('click', handleClick);
         viewport.addEventListener('mouseover', handleMouseOver);
         viewport.addEventListener('mouseout', handleMouseOut);
+        
+        // (Search input listener moved to PortSettingsManager)
 
-        // Arka planda güncelle (hata olursa sessizce geç)
+
+        // Periyodik güncelleme (Savaş sayaçları için)
+        setInterval(() => {
+            if (activeTooltipPortId) {
+                const target = document.querySelector(`img[data-port-id="${activeTooltipPortId}"]`);
+                if (target) updateTooltipContent(target);
+            }
+            // (Sidebar list refresh moved to PortSettingsManager)
+        }, 60000); // 1 dakikada bir tooltip tazeleyebilir
+
+        // Liman koordinatlarını ve ticaret verilerini yükle
+        loadPortData();
         loadTradeDataSafe();
     }
 
@@ -184,13 +241,26 @@ const PortManager = (() => {
         });
     }
 
-    // Port koordinat verisini yüklemeye çalış (başarısız olursa sessizce geç)
+    // Liman koordinat verisini yükle (file:// güvenli)
     function loadPortData() {
-        if (location.protocol === 'file:') return; // file:// modunda fetch çalışmaz
-        fetch('assets/data/ports.json')
-            .then(r => r.ok ? r.json() : {})
-            .then(data => { portsData = data; })
-            .catch(() => {});
+        portsData = PORTS_COORDINATES;
+    }
+
+    // (renderSidebarList function removed as its container is gone)
+    function renderSidebarList() {
+        // Safe placeholder to avoid ReferenceErrors
+    }
+
+    function flyToPort(id) {
+        const data = portsData[id];
+        if (data && window.MapController) {
+            window.MapController.centerOn(data.x, data.y, 1.5, false, 1200);
+            // Tooltip'i tetikle
+            const img = document.querySelector(`img[data-port-id="${id}"]`);
+            if (img) {
+                setTimeout(() => handleMouseOver({ target: img }), 500);
+            }
+        }
     }
 
     // ---- UI Creation ----
@@ -262,11 +332,19 @@ const PortManager = (() => {
         showDetail(portId, portName);
     }
 
+    let activeTooltipPortId = null;
+
     function handleMouseOver(e) {
         const target = findPortTarget(e.target);
         if (!target || target.tagName !== 'IMG') return;
         if (activePort === target) return;
+        
+        activeTooltipPortId = target.dataset.portId;
+        updateTooltipContent(target);
+    }
 
+    function updateTooltipContent(target) {
+        if (!tooltip) return;
         const portName = target.dataset.portName || target.title;
         const portId = target.dataset.portId;
         const portInfo = portsData[portId] || {};
@@ -275,17 +353,82 @@ const PortManager = (() => {
         const rect = target.getBoundingClientRect();
         const viewportRect = document.getElementById('map-viewport').getBoundingClientRect();
 
+        const custom = (typeof PortSettingsManager !== 'undefined') ? PortSettingsManager.getSettings(portId) : {};
+        
+        let warStatusHtml = '';
+        if (custom.warHours) {
+            const status = getWarStatusInfo(custom.warHours);
+            warStatusHtml = `
+                <div class="tooltip-status-badge ${status.class}">
+                    ${status.text}
+                </div>
+            `;
+        }
+
+        let extraHtml = '';
+        if (custom.owner || custom.clan || custom.warHours) {
+            extraHtml = `
+                <div class="tooltip-divider"></div>
+                <div class="tooltip-extra">
+                    ${custom.owner ? `<div class="tooltip-row"><span class="t-label">${i18n.t('ports.tooltip.owner')}</span> <span class="t-val">${custom.owner}</span></div>` : ''}
+                    ${custom.clan ? `<div class="tooltip-row"><span class="t-label">${i18n.t('ports.tooltip.clan')}</span> <span class="t-val text-sky-400">[${custom.clan}]</span></div>` : ''}
+                    ${custom.warHours ? `<div class="tooltip-row"><span class="t-label">${i18n.t('ports.tooltip.war')}</span> <span class="t-val text-slate-300">${custom.warHours}</span></div>` : ''}
+                </div>
+            `;
+        }
+
         tooltip.innerHTML = `
-            <div class="tooltip-name">${typeInfo.icon} ${portName}</div>
-            <div class="tooltip-type" style="color:${typeInfo.color}">${typeInfo.label}</div>
+            <div class="tooltip-header">
+                <div class="tooltip-name">${typeInfo.icon} ${portName}</div>
+                ${warStatusHtml}
+            </div>
+            <div class="tooltip-type" style="color:${typeInfo.color}">${typeof typeInfo.label === 'function' ? typeInfo.label() : typeInfo.label}</div>
+            ${extraHtml}
         `;
         tooltip.style.left = (rect.left + rect.width / 2 - viewportRect.left) + 'px';
         tooltip.style.top = (rect.top - viewportRect.top - 8) + 'px';
         tooltip.classList.remove('hidden');
     }
 
+    function getWarStatusInfo(hoursStr) {
+        try {
+            const parts = hoursStr.split('-').map(s => s.trim());
+            if (parts.length !== 2) return { text: '', class: 'hidden' };
+
+            const now = new Date();
+            const currentMin = now.getHours() * 60 + now.getMinutes();
+
+            const parseTime = (t) => {
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+            };
+
+            const startMin = parseTime(parts[0]);
+            const endMin = parseTime(parts[1]);
+
+            if (currentMin >= startMin && currentMin < endMin) {
+                return { text: i18n.t('ports.status.active'), class: 'status-active' };
+            }
+
+            if (currentMin < startMin) {
+                const diff = startMin - currentMin;
+                const h = Math.floor(diff / 60);
+                const m = diff % 60;
+                const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+                return { text: `${i18n.t('ports.status.startsin')} ${timeStr}`, class: 'status-soon' };
+            }
+
+            return { text: i18n.t('ports.status.safe'), class: 'status-safe' };
+        } catch (e) {
+            return { text: '', class: 'hidden' };
+        }
+    }
+
     function handleMouseOut(e) {
-        if (findPortTarget(e.target)) hideTooltip();
+        if (findPortTarget(e.target)) {
+            hideTooltip();
+            activeTooltipPortId = null;
+        }
     }
 
     function hideTooltip() {
@@ -362,7 +505,7 @@ const PortManager = (() => {
     function getProducts() { return PRODUCTS; }
     function getPortsData() { return portsData; }
 
-    return { init, closeDetail, showDetail, getTradeData, getProducts, getPortsData };
+    return { init, closeDetail, showDetail, getTradeData, getProducts, getPortsData, flyToPort, renderSidebarList };
 })();
 
 document.addEventListener('DOMContentLoaded', () => { PortManager.init(); });
